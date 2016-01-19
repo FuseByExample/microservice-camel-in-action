@@ -213,6 +213,8 @@ Version: 1.0-SNAPSHOT
 
 # Run locally the MicroServices
 
+![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-rest.png)
+
 * Open 2 terminal and move to the projects; camel-rest-client and camel-rest-service
 * Launch the REST Service
 
@@ -232,6 +234,8 @@ Hello charles! Welcome from pod : null
 
 ```
 # Use a Docker daemon started with boot2docker or docker-machine
+
+![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-docker-rest.png)
 
 * Launch docker-machine or boot2docker in a terminal and start the default virtual machine using this command `docker-machine start default`
 
