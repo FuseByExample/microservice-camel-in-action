@@ -326,14 +326,15 @@ Transfer-Encoding: chunked
 Hello charles! Welcome from pod : 6da09e192031
 ```
 
-# We will now deploy the Camel REST client as a microcontainer within the Docker container. So, build the Image and create the container as such
+* We will now deploy the Camel REST client as a microcontainer within the Docker container
+* So, build the Image and create the container as such
 
 ```
     mvn clean install docker:build
     docker run -it --name camel-rest-client 192.168.99.100:5000/fabric8/camel-rest-client:1.0-SNAPSHOT
 ```
 
-# You should get from the console the messages received from the REST Service
+* You should get from the console the messages received from the REST Service
 
 ```
     2016-01-18 18:06:22,201 [main           ] INFO  CdiCamelContext                - Route: route1 started and consuming from: Endpoint[timer://foo?period=5000]
@@ -342,7 +343,7 @@ Hello charles! Welcome from pod : 6da09e192031
 ```
 
 
-# Connect to the Tomcat console and add the hawtio war to discover the Camel Plugin
+* Connect to the Tomcat console and add the hawtio war to discover the Camel Plugin
 
 ```
     http://172.17.0.2:8080/manager/html
@@ -353,11 +354,13 @@ Hello charles! Welcome from pod : 6da09e192031
     Install the hawtio-default.war file available here : http://repo1.maven.org/maven2/io/hawt/hawtio-default/1.4.59/hawtio-default-1.4.59.war
 ```
 
-# You can access now to your Camel routes
+* You can access now to your Camel routes
 
 ```
     http://172.17.0.7:8080/hawtio-default-1.4.59/welcome
 ```
+
+![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/camel-docker-plugin.png)
 
 # Use OpenShift v3 instead of the Docker Container to use Kubernetes Service
 
@@ -468,11 +471,6 @@ camel-rest-service   camel-rest-service-demo.vagrant.f8             camel-rest-s
 2016-01-18 19:37:31,494 [ClientTCPWorker] INFO  route1                         - Response : Hello Claus Ibsen! Welcome from pod : camel-rest-service-8pbq9
 2016-01-18 19:37:36,490 [ClientTCPWorker] INFO  route1                         - Response : Hello Nandan Joshi! Welcome from pod : camel-rest-service-8pbq9
 ```
-
-* Open the Camel Console 
-
-![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/camel-docker-plugin.png)
-
 
 * Increase the controller of the REST service to create 3 pods
 
