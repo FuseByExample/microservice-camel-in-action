@@ -1,9 +1,17 @@
-# INSTRUCTIONS
+# Instructions
 
 The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contain the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
 project. They both will be created as Microservice as they will be able to run into their own JVM, Container, without any ESB Bus, will be managed separately and independently.
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
+
+# Prerequisites
+
+* [Vagrant](https://www.vagrantup.com/)
+* [VirtualBox](https://www.virtualbox.org/)
+* [Fabric8 Installer](https://github.com/fabric8io/fabric8-installer)
+* Apache Maven
+* JDK 8
 
 # Project creation
 
