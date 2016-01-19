@@ -364,6 +364,9 @@ Hello charles! Welcome from pod : 6da09e192031
 
 # Use OpenShift v3 instead of the Docker Container to use Kubernetes Service
 
+![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
+
+
 * Install the [https://github.com/fabric8io/fabric8-installer](fabric8-installer) project and run `vagrant up` command within the folder vagrant/openshift
 
 * Using the OpenShift client tool, log to the server and create a demo namespace/project
