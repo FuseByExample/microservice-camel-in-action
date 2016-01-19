@@ -104,7 +104,7 @@ public class SomeBean {
 The next project will be designed using the camel web archetype which is a Servlet Tomcat application and will be used to expose using the Camel REST DSL
 a REST service to get a User Hello Message.
 
-The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello` and this message will be returned '"Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")'
+The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello` and this message will be returned `'"Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")'`
 
 Here is the syntax of the Camel Route to be used
 
@@ -137,7 +137,7 @@ Add the `<package>` XML tag within the `Camel XML Bean file`
  <camelContext xmlns="http://camel.apache.org/schema/spring">
     <package>org.jboss.fuse</package>
   </camelContext>
-``
+```
 
 The detail to be used to set the maven archetype is defined hereafter:
 
