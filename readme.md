@@ -290,7 +290,7 @@ Hello charles! Welcome from pod : null
 docker ps --filter="name=rest"
 CONTAINER ID        IMAGE                                                         COMMAND                  CREATED             STATUS              PORTS                                            NAMES
 6da09e192031        192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT   "/bin/sh -c /opt/tomc"   8 minutes ago       Up 8 minutes        0.0.0.0:8080->8080/tcp, 0.0.0.0:8778->8778/tcp   camel-rest-service
-``
+```
 
 *  Change the url of the netty4-http endpoint of the camel REST Client to point to this Hostname
 
