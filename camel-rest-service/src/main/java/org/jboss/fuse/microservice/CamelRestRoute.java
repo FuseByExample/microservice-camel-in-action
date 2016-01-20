@@ -11,11 +11,14 @@ public class CamelRestRoute extends RouteBuilder {
 
     @Override public void configure() throws Exception {
 
-        restConfiguration().component("servlet").host(HOST).setPort(PORT);
+        restConfiguration()
+            .component("servlet")
+            .host(HOST)
+            .setPort(PORT);
 
         // use the rest DSL to define the rest services
         rest("/users/")
-                .get("{id}/hello")
+            .get("{id}/hello")
                 .route()
                 .process(new Processor() {
                     public void process(Exchange exchange) throws Exception {
