@@ -223,11 +223,16 @@ Version: 1.0-SNAPSHOT
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-rest.png)
 
-* Open 2 terminal and move to the projects; camel-rest-client and camel-rest-service
+* Open 2 terminal and move to the projects; `camel-rest-client` and `camel-rest-service`
 * Launch the REST Service
 
 ```
 mvn jetty:run
+```
+* And the client
+
+```
+mvn camel:run
 ```
 * Test it using curl or HTTPie tool
 
