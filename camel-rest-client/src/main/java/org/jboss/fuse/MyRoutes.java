@@ -33,7 +33,6 @@ public class MyRoutes extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        // you can configure the route rule with Java DSL here
 
         from(inputEndpoint)
             .setHeader("user").method(someBean,"getRandomUser")
