@@ -19,10 +19,10 @@ public class MyRoutes extends RouteBuilder {
 
     @Inject
     /** Local **/
-    @Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
+    // @Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
 
     /** Docker Container **/
-    // @Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
+    @Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
 
     /** Pod Container + Kubernetes Service  **/
     // @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
