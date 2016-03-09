@@ -1,9 +1,10 @@
 def GIT_URL = "https://github.com/FuseByExample/microservice-camel-in-action.git"
 def BRANCH = "kubernetes"
+def CREDENTIALS = ""
 
 stage('clone')
 node {
-    git url: GIT_URL, branch: BRANCH
+    git url: GIT_URL, branch: BRANCH, credentialsId: CREDENTIALS
 }
 
 
