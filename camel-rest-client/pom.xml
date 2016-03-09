@@ -8,9 +8,7 @@
   <name>JBoss Fuse :: Microservice :: Camel Rest Client - CDI</name>
 
   <properties>
-    <fabric8.version>2.2.88</fabric8.version>
     <camel.version>2.16.1</camel.version>
-    <docker.maven.plugin.version>0.13.6</docker.maven.plugin.version>
 
     <docker.assemblyDescriptorRef>artifact-with-dependencies</docker.assemblyDescriptorRef>
     <docker.from>fabric8/s2i-java:1.2</docker.from>
@@ -39,16 +37,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>fabric8-arquillian</artifactId>
-        <version>${fabric8.version}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.apache.camel</groupId>
@@ -97,11 +85,6 @@
       <version>2.16.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>fabric8-arquillian</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <build>
     <defaultGoal>install</defaultGoal>
@@ -141,7 +124,6 @@
       <plugin>
         <groupId>org.jolokia</groupId>
         <artifactId>docker-maven-plugin</artifactId>
-        <version>${docker.maven.plugin.version}</version>
         <configuration>
           <images>
             <image>
@@ -165,7 +147,6 @@
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>fabric8-maven-plugin</artifactId>
-        <version>${fabric8.version}</version>
         <executions>
           <execution>
             <id>json</id>
@@ -185,7 +166,6 @@
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>hawt-app-maven-plugin</artifactId>
-        <version>${fabric8.version}</version>
         <executions>
           <execution>
             <id>hawt-app</id>
