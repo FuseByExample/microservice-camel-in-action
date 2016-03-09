@@ -1,22 +1,29 @@
-def GIT_URL = "https://github.com/cmoulliard/camel-webbundle.git"
+def GIT_URL = "https://github.com/FuseByExample/microservice-camel-in-action.git"
+def BRANCH = "kubernetes"
 
 stage('clone')
 node {
-    git url: GIT_URL, branch: 'master'
+    git url: GIT_URL, branch: BRANCH
 }
 
 
-stage('test')
+stage('compile')
 node {
     withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
-        sh 'mvn clean test'
+        sh 'mvn clean compile'
     }
 }
 
-
-stage('install')
+stage('deploy')
 node {
     withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
-        sh 'mvn install'
+        dir('camel-rest-service') {
+         sh 'mvn -Pf8-local-deploy'
+        }
+        
+        dir('camel-rest-client') {
+         sh 'mvn -Pf8-local-deploy'
+        }
+        
     }
 }
