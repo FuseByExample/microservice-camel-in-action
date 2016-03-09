@@ -355,6 +355,7 @@ Hello charles! Welcome from pod : 6da09e192031
 * So, build the Image and create the container as such
 
 ```
+    cd camel-rest-client
     mvn clean install docker:build
     docker run -it --name camel-rest-client $DOCKER_IP:5000/fabric8/camel-rest-client:1.0-SNAPSHOT
 ```
