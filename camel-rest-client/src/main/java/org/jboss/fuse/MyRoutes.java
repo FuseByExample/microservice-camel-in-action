@@ -14,9 +14,6 @@ import org.apache.camel.cdi.Uri;
 @ContextName("myCdiCamelContext")
 public class MyRoutes extends RouteBuilder {
 
-    //protected static final String DOCKER_CONTAINER_IP = System.getenv("DOCKER_CONTAINER_IP");
-    //protected static final String NETTY_URI = "netty4-http:http://{{env:DOCKER_CONTAINER_IP}}:8080?keepalive=false&disconnect=true";
-
     @Inject
     @Uri("timer:foo?period=5000")
     private Endpoint inputEndpoint;
