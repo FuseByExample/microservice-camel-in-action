@@ -3,6 +3,7 @@ package org.jboss.fuse;
 import javax.inject.Inject;
 
 import org.apache.camel.Endpoint;
+import org.apache.camel.EndpointInject;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.cdi.ContextName;
 import org.apache.camel.cdi.Uri;
@@ -13,19 +14,15 @@ import org.apache.camel.cdi.Uri;
 @ContextName("myCdiCamelContext")
 public class MyRoutes extends RouteBuilder {
 
+    //protected static final String DOCKER_CONTAINER_IP = System.getenv("DOCKER_CONTAINER_IP");
+    //protected static final String NETTY_URI = "netty4-http:http://{{env:DOCKER_CONTAINER_IP}}:8080?keepalive=false&disconnect=true";
+
     @Inject
     @Uri("timer:foo?period=5000")
     private Endpoint inputEndpoint;
 
     @Inject
-    /** Local **/
-    // @Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
-
-    /** Docker Container **/
-    @Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
-
-    /** Pod Container + Kubernetes Service  **/
-    // @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
+    @Uri("netty4-http:http://{{env:DOCKER_CONTAINER_IP}}:8080?keepalive=false&disconnect=true")
     private Endpoint httpEndpoint;
 
     @Inject
