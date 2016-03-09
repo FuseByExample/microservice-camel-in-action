@@ -17,6 +17,9 @@ node {
 stage('deploy')
 node {
     withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
+
+        sh 'oc login -u admin -p admin https://localhost:8443; oc new-project demo'
+
         dir('camel-rest-service') {
          sh 'mvn -Pf8-local-deploy'
         }
