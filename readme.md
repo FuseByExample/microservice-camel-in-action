@@ -5,6 +5,10 @@ project. They both will be created as Microservice as they will be able to run i
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
 
+# Table Of Content
+
+* [Prerequisites](#Prerequisites)
+
 # Prerequisites
 
 * [Vagrant](https://www.vagrantup.com/)
