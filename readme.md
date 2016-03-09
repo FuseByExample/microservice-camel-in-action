@@ -292,9 +292,10 @@ Hello charles! Welcome from pod : null
     <docker.registryPrefix>${env.DOCKER_REGISTRY}/</docker.registryPrefix>
 ```
 
-* Now, you can build the docker image of the Camel Rest Service and push it to the registry by executing these commands within the terminal of the `camel-rest-service` project
+* Now, you can build the docker image of the Camel Rest Service and push it to the registry by executing these commands within the terminal of the `camel-rest-service` project.
 
 ```
+    git checkout -b docker
     mvn clean install docker:build
     docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service 192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
 ```
@@ -412,6 +413,7 @@ Hello charles! Welcome from pod : 6da09e192031
 * We will build the project using the following profile
 
 ```
+    git checkout -b kubernetes
     mvn -Pf8-build
 ```
 
