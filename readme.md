@@ -7,11 +7,11 @@ project. They both will be created as Microservice as they will be able to run i
 
 # Table Of Content
 
-* [Prerequisites](#Prerequisites)
-* [Project creation](#Project-creation)
-* [Run locally the MicroServices](#Run-locally-the-MicroServices)
-* [Use a Docker daemon](#Use-a-Docker-daemon)
-* [Use OpenShift & Kubernetes Service](#Use-OpenShift-&-Kubernetes-Service)
+* [Prerequisites](#-Prerequisites)
+* [Project creation](#-Project-creation)
+* [Run locally the MicroServices](#-Run-locally-the-MicroServices)
+* [Use a Docker daemon](#-Use-a-Docker-daemon)
+* [Use OpenShift & Kubernetes Service](# Use-OpenShift-&-Kubernetes-Service)
 
 # Prerequisites
 
