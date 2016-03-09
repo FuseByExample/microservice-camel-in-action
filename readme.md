@@ -316,10 +316,10 @@ fabric8-vagrant
 ```
     git checkout -b docker
     mvn clean install docker:build
-    docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service -DOCKER_IP:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
+    docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service $DOCKER_IP:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
 ```
 
-* Find the IP address of the docker container created as we whave to change this address for the URL of the client
+* Find the IP address of the docker container created as we have to change this address for the URL of the client
 
 ```
     docker ps --filter="name=rest" | awk '{print $1}' | xargs docker inspect | grep "IPAddress"
