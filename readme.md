@@ -8,6 +8,10 @@ project. They both will be created as Microservice as they will be able to run i
 # Table Of Content
 
 * [Prerequisites](#Prerequisites)
+* [Project creation](#Project-creation)
+* [Run locally the MicroServices](#Run-locally-the-MicroServices)
+* [Use a Docker daemon](#Use-a-Docker-daemon)
+* [Use OpenShift & Kubernetes Service](#Use-OpenShift-&-Kubernetes-Service)
 
 # Prerequisites
 
@@ -392,7 +396,7 @@ Hello charles! Welcome from pod : 6da09e192031
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/camel-docker-plugin.png)
 
-# Use OpenShift v3 instead of the Docker Container to use Kubernetes Service
+# Use OpenShift & Kubernetes Service
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
 
