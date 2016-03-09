@@ -7,11 +7,14 @@ project. They both will be created as Microservice as they will be able to run i
 
 # Table Of Content
 
-* [Prerequisites](#Prerequisites)
-* [Project creation](#Project-creation)
-* [Run locally the MicroServices](#Run-locally-the-MicroServices)
-* [Use a Docker daemon](#Use-a-Docker-daemon)
-* [Use OpenShift & Kubernetes Service](#Use-OpenShift-&-Kubernetes-Service)
+* [Prerequisites](#prerequisites)
+* [Project creation](#project-creation)
+  * [iPaas Archetype](#ipaas-archetype)
+  * [Using JBoss Forge](#using-jboss-forge)
+* [Run locally the MicroServices](#run-locally-the-microservices)
+* [Use a Docker daemon](#use-a-docker-daemon)
+* [Use OpenShift &amp; Kubernetes Service](#use-openshift--kubernetes-service)
+* [Clean project](#clean-project)
 
 # Prerequisites
 
