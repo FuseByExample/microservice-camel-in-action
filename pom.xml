@@ -12,12 +12,33 @@
     <properties>
         <docker.maven.plugin.version>0.13.6</docker.maven.plugin.version>
         <fabric8.version>2.2.96</fabric8.version>
+        <camel.version>2.16.1</camel.version>
     </properties>
 
     <modules>
         <module>camel-rest-client</module>
         <module>camel-rest-service</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- import fabric8 platfrom bom first -->
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
+                <version>${fabric8.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-parent</artifactId>
+                <version>${camel.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <pluginManagement>
