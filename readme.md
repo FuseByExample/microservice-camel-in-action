@@ -1,6 +1,6 @@
-# Camel REST Microservices running on Openshift
+# Camel REST Microservices 
 
-The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contain the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
+The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contains the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
 project. They both will be created as Microservice as they will be able to run into their own JVM, Container, without any ESB Bus, will be managed separately and independently.
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
@@ -50,7 +50,7 @@ public class MyRoutes extends RouteBuilder {
     @Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
 
     /** Docker Container **/
-    //@Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
+    //@Uri("netty4-http:http://{{env:DOCKER_CONTAINER_IP}}:8080?keepalive=false&disconnect=true")
 
     /** Pod Container + Kubernetes Service  **/
     //@Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
