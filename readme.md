@@ -1,15 +1,28 @@
-# Camel REST Microservices running on Openshift
+# Camel REST Microservices 
 
-The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contain the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
+The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contains the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
 project. They both will be created as Microservice as they will be able to run into their own JVM, Container, without any ESB Bus, will be managed separately and independently.
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
+
+# Table Of Content
+
+* [Prerequisites](#prerequisites)
+* [Project creation](#project-creation)
+  * [iPaas Archetype](#ipaas-archetype)
+  * [Using JBoss Forge](#using-jboss-forge)
+* [Run locally the MicroServices](#run-locally-the-microservices)
+* [Use a Docker daemon](#use-a-docker-daemon)
+* [Use OpenShift &amp; Kubernetes Service](#use-openshift--kubernetes-service)
+* [Clean project](#clean-project)
+* [Continuous Development](#continuous-development)
 
 # Prerequisites
 
 * [Vagrant](https://www.vagrantup.com/)
 * [VirtualBox](https://www.virtualbox.org/)
 * [Fabric8 Installer](https://github.com/fabric8io/fabric8-installer)
+* [Docker Machine](https://docs.docker.com/machine/install-machine/) OR [Fabric8 Installer Vagrant](https://github.com/fabric8io/fabric8-installer/tree/master/vagrant/openshift)
 * Apache Maven
 * JDK 8
 
@@ -49,7 +62,7 @@ public class MyRoutes extends RouteBuilder {
     @Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
 
     /** Docker Container **/
-    //@Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
+    //@Uri("netty4-http:http://{{env:DOCKER_CONTAINER_IP}}:8080?keepalive=false&disconnect=true")
 
     /** Pod Container + Kubernetes Service  **/
     //@Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
@@ -246,30 +259,48 @@ Transfer-Encoding: chunked
 Hello charles! Welcome from pod : null
 
 ```
-# Use a Docker daemon started with boot2docker or docker-machine
+# Use a Docker daemon
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-docker-rest.png)
 
-* Launch docker-machine or boot2docker in a terminal and start the default virtual machine using this command `docker-machine start default`
+* Launch the docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
 
-* Within the terminals where your development projects has been created, set the ENV variables required to access and communicate with the
+* Alternatively, you can use the Vagrant Fabric8 virtual Machine created in VietualBox to access Docker daemon
+
+```
+cd /path/to/fabric8-installer/tree/master/vagrant/openshift
+vagrant up
+```
+
+* Within the terminal where your development projects has been created, set the ENV variables required to access and communicate with the
   Docker daemon by executing this command `eval $(docker-machine env default)`.
 
-* Add the `DOCKER_IP` and `DOCKER_REGISTRY` env variables. The IP address could be different on your machine
+* Add the `DOCKER_IP` and `DOCKER_REGISTRY` env variables. The IP address could be different on your machine depending if you use docker-machine, fabric8-vagrant or another docker runtime.
 
 ```
+docker-machine
     export DOCKER_IP=192.168.99.100
     export DOCKER_REGISTRY="192.168.99.100:5000"
+fabric8-vagrant
+    export DOCKER_IP=172.28.128.4
+    export DOCKER_HOST="tcp://172.28.128.4:2375"
+    export DOCKER_REGISTRY="172.28.128.4:5000"
 ```
 
-* Check that the DOCKER env variables have been created
+* Check that the DOCKER env variables have been created. The information reported could be different according to your environement.
 
 ```
+docker-machine
     export | grep 'DOCKER'
     export DOCKER_TLS_VERIFY="1"
     export DOCKER_HOST="tcp://192.168.99.100:2376"
     export DOCKER_CERT_PATH="/Users/chmoulli/.docker/machine/machines/default"
     export DOCKER_MACHINE_NAME="default"
+fabric8-vagrant
+    export | grep 'DOCKER'
+    declare -x DOCKER_HOST="tcp://172.28.128.4:2375"
+    declare -x DOCKER_IP="172.28.128.4"
+    declare -x DOCKER_REGISTRY="172.28.128.4:5000"
 ```
 
 * Redirect the traffic from the Host to the Docker Virtual Machine as we will access the service from the host or within a container
@@ -292,14 +323,15 @@ Hello charles! Welcome from pod : null
     <docker.registryPrefix>${env.DOCKER_REGISTRY}/</docker.registryPrefix>
 ```
 
-* Now, you can build the docker image of the Camel Rest Service and push it to the registry by executing these commands within the terminal of the `camel-rest-service` project
+* Now, you can build the docker image of the Camel Rest Service and push it to the registry by executing these commands within the terminal of the `camel-rest-service` project.
 
 ```
+    git checkout -b docker
     mvn clean install docker:build
-    docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service 192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
+    docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service $DOCKER_IP:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
 ```
 
-* Find the IP address of the docker container created as we whave to change this address for the URL of the client
+* Find the IP address of the docker container created as we have to change this address for the URL of the client
 
 ```
     docker ps --filter="name=rest" | awk '{print $1}' | xargs docker inspect | grep "IPAddress"
@@ -313,16 +345,16 @@ CONTAINER ID        IMAGE                                                       
 6da09e192031        192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT   "/bin/sh -c /opt/tomc"   8 minutes ago       Up 8 minutes        0.0.0.0:8080->8080/tcp, 0.0.0.0:8778->8778/tcp   camel-rest-service
 ```
 
-*  Change the url of the netty4-http endpoint of the camel REST Client to point to this Hostname
+* Create an env variable with the IP address of the container
 
 ```
-    @Uri("netty4-http:http://DOCKER_CONTAINER_IPADDRESS:8080?keepalive=false&disconnect=true")
+export DOCKER_CONTAINER_IP=172.17.0.13
 ```
 
 * Test it using HTTPie or curl. The return message mentions the POD name but the id corresponds to the docker container created
 
 ```
-http GET http://172.17.0.2:8080/camel/users/charles/hello
+http GET http://$DOCKER_CONTAINER_IP:8080/camel/users/charles/hello
 HTTP/1.1 200 OK
 Date: Mon, 18 Jan 2016 17:57:55 GMT
 Server: Apache-Coyote/1.1
@@ -335,8 +367,9 @@ Hello charles! Welcome from pod : 6da09e192031
 * So, build the Image and create the container as such
 
 ```
+    cd camel-rest-client
     mvn clean install docker:build
-    docker run -it --name camel-rest-client 192.168.99.100:5000/fabric8/camel-rest-client:1.0-SNAPSHOT
+    docker run -it --name camel-rest-client -e DOCKER_CONTAINER_IP=172.17.0.13 $DOCKER_IP:5000/fabric8/camel-rest-client:1.0-SNAPSHOT
 ```
 
 * You should get from the console the messages received from the REST Service
@@ -356,18 +389,18 @@ Hello charles! Welcome from pod : 6da09e192031
     The IP address depends on the address generated by the docker container
     User / password : admin/admin
 
-    Install the hawtio-default.war file available here : http://repo1.maven.org/maven2/io/hawt/hawtio-default/1.4.59/hawtio-default-1.4.59.war
+    Install the hawtio-web.war file available here :                  http://repo1.maven.org/maven2/io/hawt/hawtio-web/1.4.59/hawtio-web-1.4.59.war
 ```
 
 * You can access now to your Camel routes
 
 ```
-    http://172.17.0.7:8080/hawtio-default-1.4.59/welcome
+    http://172.17.0.7:8080/hawtio-web-1.4.59/welcome
 ```
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/camel-docker-plugin.png)
 
-# Use OpenShift v3 instead of the Docker Container to use Kubernetes Service
+# Use OpenShift & Kubernetes Service
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
 
@@ -412,6 +445,7 @@ Hello charles! Welcome from pod : 6da09e192031
 * We will build the project using the following profile
 
 ```
+    git checkout -b kubernetes
     mvn -Pf8-build
 ```
 
@@ -499,6 +533,138 @@ oc delete route -l group=demo
 oc delete rc -l group=demo
 ```
 
+# Continuous Development
+
+In order to automate the build, deployment process and the creation of the Microservices as pods on the OpenShift platform, we will create a Jenkins Groovy DSL file that 
+ Jenkins will trigger with the pipeline plugin. This file will contain different stages with the commands required to compile, create the docker image, push it to the docker images registry and finally deploy the kubernetes 
+json file describing the kubernetes application to be deployed on the platform.
+ 
+Remark : For more information about the Groovy DSL syntax, please use the following links
+ 
+* [Job DSL Plugin](https://github.com/jenkinsci/job-dsl-plugin)
+* [Tutorial](https://github.com/jenkinsci/job-dsl-plugin/wiki/Tutorial---Using-the-Jenkins-Job-DSL)
+* [Workflow DSL plugin](https://github.com/jenkinsci/workflow-plugin/)
+* [Tutorial](https://github.com/jenkinsci/workflow-plugin/blob/master/TUTORIAL.md)
+ 
+The scenario that we will achieve within the script is defined as such :
+ 
+* Stage `prepare` : Log to the openshift server using the admin user and create a namespace/project called `demo`
+* Stage `clone` : Git clone the project from the gogs repository
+* Stage `deploy` : Compile the project
+* Build the docker images for the microservices client & service
+* Create the Kubernetes Service, replication controller and pods 
+
+Here is the definition the Groovy DSL file that we will use. 
+
+```
+def GIT_URL = "http://gogs.vagrant.f8/gogsadmin/microservice.git"
+def BRANCH = "kubernetes"
+def CREDENTIALS = ""
+
+#stage('prepare')
+#node {
+#    sh 'wget https://github.com/openshift/origin/releases/download/v1.1.3/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
+#    sh 'tar -vxf openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
+#    sh 'export OC_PATH=`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit'
+#    sh 'export PATH=$PATH:$OC_PATH'
+#    
+#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc login -u admin -p admin --insecure-skip-tls-verify=false https://172.17.0.1:8443'
+#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc new-project demo'
+#}
+
+stage('clone')
+node {
+    git url: GIT_URL, branch: BRANCH, credentialsId: CREDENTIALS
+}
+
+
+stage('compile')
+node {
+    withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
+        sh 'mvn clean compile'
+    }
+}
+
+stage('deploy')
+node {
+    withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
+
+        dir('camel-rest-service') {
+         sh 'mvn -Dfabric8.namespace=demo -Pf8-local-deploy'
+        }
+        
+        dir('camel-rest-client') {
+         sh 'mvn -Dfabric8.namespace=demo -Pf8-local-deploy'
+        }
+        
+    }
+}
+```
+
+To setup the environment on openshift & fabric8, here are the steps to be done.
+
+* Create a VM into VirtualBox using the [Vagrantfile](https://github.com/fabric8io/fabric8-installer/tree/master/vagrant/openshift) of the Fabric8 project
+
+```
+cd /path/to/vagrant/openshift
+vagrant up
+vagrant ssh
+
+sudo bash
+gofabric8 pull cd-pipeline
+```
+
+* Next, log on to the OpenShift Web Console within your Web Browser at this address `https://172.28.128.4:8443` with the user `admin` and password `admin`
+* Click on the `default` project to be redirected to this [link](https://172.28.128.4:8443/console/project/default/overview)
+* From the list of the pods, click on `fabric8.vagrant.f8` link to open the fabric8 console within another tab window.
+* Log on using the user `admin` and password `admin`
+* From the workspace screen, select also the namespace `default`
+* From the left menu bar select `Runtime` -  http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=
+* You will see the list of the pods deployed and running in openshift
+* To create the docker containers required to use the continuous delivery process, we have to install some kubernetes applications. This process will be simplified by using 
+within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=) the button `Run`
+* Click on the `Run` button and move within the table to the `cd-pipeline`
+* Click on the `green` button to install it
+* Review the parameters defined per default and click on the `Run` button.
+* You will be redirect to the previous screen and after a few moments, you will see new pods within your list (jenkins, gogs, nexus)
+* Click on the `gogs` [link](http://gogs.vagrant.f8/) to access to the Gogs Server 
+* Create a new repository with the name `microservice`. The username and password to be used are `gogsadmin` and `RedHat$1`
+* Use the `http://gogs.vagrant.f8/gogsadmin/microservice.git` uri to create a new project on your machine and copy/paste within this project this microservice project (without the .git folder)
+* Commit the project to gogs
+* From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
+* Increase the number of executors by editing the jenkins system configuration at this address `http://jenkins.vagrant.f8/manage` and change the value from 0 to 1 for the field ``
+* Create a new job with the name `microservice`, select the `pipeline` option and clock o nthe button `ok`
+* Within the pipeline screen, move to the section `Piepleine script` and add the content of the jenkinsfile within the field. Click on the `save` button
+* Launch the job and check the content of console to verify that the project is well compiled, ...
+
+```
+[INFO] --- fabric8-maven-plugin:2.2.96:apply (default-cli) @ camel-rest-client ---
+[INFO] Using kubernetes at: https://kubernetes.default.svc/ in namespace demo
+[INFO] Kubernetes JSON: /var/jenkins_home/workspace/microservice/camel-rest-client/target/classes/kubernetes.json
+[INFO] OpenShift platform detected
+[INFO] Using namespace: demo
+[INFO] Creating a Template from kubernetes.json namespace demo name camel-rest-client
+[INFO] Created Template: camel-rest-client/target/fabric8/applyJson/demo/template-camel-rest-client.json
+[INFO] Looking at repo with directory /var/jenkins_home/workspace/microservice/.git
+[INFO] Looking at repo with directory /var/jenkins_home/workspace/microservice/.git
+[INFO] Creating a Service from kubernetes.json namespace demo name camel-rest-client
+[INFO] Created Service: camel-rest-client/target/fabric8/applyJson/demo/service-camel-rest-client.json
+[INFO] Creating a ReplicationController from kubernetes.json namespace demo name camel-rest-client
+[INFO] Created ReplicationController: camel-rest-client/target/fabric8/applyJson/demo/replicationcontroller-camel-rest-client.json
+[INFO] Creating Route demo:camel-rest-client host: 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 36.795 s
+[INFO] Finished at: 2016-03-10T11:00:29+00:00
+[INFO] Final Memory: 46M/515M
+[INFO] ------------------------------------------------------------------------
+```
+
+* Return to the Fabric8 console, select the demo namespace and access to your different pods
+
 Enjoy the Camel MicroService & MicroContainer !
+
+
 
 
