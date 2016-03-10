@@ -674,6 +674,11 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 
 ![Microservice pods](/image/pods.png)
 
+And Camel Route
+
+![Camel Route](/image/camel-route.png)
+
+
 Enjoy the Camel MicroService & MicroContainer !
 
 
