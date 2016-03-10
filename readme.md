@@ -557,14 +557,20 @@ The scenario that we will achieve within the script is defined as such :
 Here is the definition the Groovy DSL file that we will use. 
 
 ```
-def GIT_URL = "https://github.com/FuseByExample/microservice-camel-in-action.git"
+def GIT_URL = "http://gogs.vagrant.f8/gogsadmin/microservice.git"
 def BRANCH = "kubernetes"
 def CREDENTIALS = ""
 
-stage('prepare')
-node {
-    sh 'oc login -u admin -p admin https://localhost:8443; oc new-project demo'
-}
+#stage('prepare')
+#node {
+#    sh 'wget https://github.com/openshift/origin/releases/download/v1.1.3/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
+#    sh 'tar -vxf openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
+#    sh 'export OC_PATH=`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit'
+#    sh 'export PATH=$PATH:$OC_PATH'
+#    
+#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc login -u admin -p admin --insecure-skip-tls-verify=false https://172.17.0.1:8443'
+#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc new-project demo'
+#}
 
 stage('clone')
 node {
@@ -584,11 +590,11 @@ node {
     withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
 
         dir('camel-rest-service') {
-         sh 'mvn -Pf8-local-deploy'
+         sh 'mvn -Dfabric8.namespace=demo -Pf8-local-deploy'
         }
         
         dir('camel-rest-client') {
-         sh 'mvn -Pf8-local-deploy'
+         sh 'mvn -Dfabric8.namespace=demo -Pf8-local-deploy'
         }
         
     }
@@ -626,8 +632,15 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * Use the `http://gogs.vagrant.f8/gogsadmin/microservice.git` uri to create a new project on your machine and copy/paste within this project this microservice project (without the .git folder)
 * Commit the project to gogs
 * From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
-* Create a new job with the name `microservice`, select the `pipeline` option, and add the content of the jenkinsfile within the Groovy DSL field
+* Increase the number of executors by editing the jenkins system configuration at this address `http://jenkins.vagrant.f8/manage` and change the value from 0 to 1 for the field ``
+* Create a new job with the name `microservice`, select the `pipeline` option and clock o nthe button `ok`
+* Within the pipeline screen, move to the section `Piepleine script` and add the content of the jenkinsfile within the field. Click on the `save` button
 * Launch the job and check the content of console to verify that the project is well compiled, ...
+
+```
+
+```
+
 * Return to the Fabric8 console, select the demo namespace and access to your different pods
 
 Enjoy the Camel MicroService & MicroContainer !
