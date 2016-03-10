@@ -15,6 +15,7 @@ project. They both will be created as Microservice as they will be able to run i
 * [Use a Docker daemon](#use-a-docker-daemon)
 * [Use OpenShift &amp; Kubernetes Service](#use-openshift--kubernetes-service)
 * [Clean project](#clean-project)
+* [Continuous Development](#continuous--development)
 
 # Prerequisites
 
@@ -532,6 +533,25 @@ oc delete route -l group=demo
 oc delete rc -l group=demo
 ```
 
+# Continuous Development
+
+In order to automate the build, deployment process and the creation of the Microservices as pods on the openshify platform, we will now create a Jenkins Groovy DSL file that 
+ Jenkins will trigger with the pipeline plugin. This file will contain different stages with the commands required to compile, create the docker image, push it to the docker images registry and finally deploy the kubernetes 
+json file describing the kubernetes application to be deployed on the platform.
+ 
+Remark : For more information about the Grrovy DSL syntax, please use the following links
+ 
+* [Job DSL Plugin](https://github.com/jenkinsci/job-dsl-plugin)
+* [Tutorial](https://github.com/jenkinsci/job-dsl-plugin/wiki/Tutorial---Using-the-Jenkins-Job-DSL)
+* [Workflow DSL plugin](https://github.com/jenkinsci/workflow-plugin/)
+* [Tutorial](https://github.com/jenkinsci/workflow-plugin/blob/master/TUTORIAL.md)
+ 
+Here is the definition the Groovy DSL file  
+
+
+
 Enjoy the Camel MicroService & MicroContainer !
+
+
 
 
