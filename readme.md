@@ -620,7 +620,7 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * Click on the `Run` button and move within the table to the `cd-pipeline`
 * Click on the `green` button to install it
 * Review the parameters defined per default and click on the `Run` button.
-* You will be redirect to the previous screen and after a few moments, you will see new pods within yoiur list (jenkins, gogs, nexus)
+* You will be redirect to the previous screen and after a few moments, you will see new pods within your list (jenkins, gogs, nexus)
 * Click on the `gogs` [link](http://gogs.vagrant.f8/) to access to the Gogs Server 
 * Create a new repository with the name `microservice`. The username and password to be used are `gogsadmin` and `RedHat$1`
 * Use the `http://gogs.vagrant.f8/gogsadmin/microservice.git` uri to create a new project on your machine and copy/paste within this project this microservice project (without the .git folder)
