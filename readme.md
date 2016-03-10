@@ -535,20 +535,98 @@ oc delete rc -l group=demo
 
 # Continuous Development
 
-In order to automate the build, deployment process and the creation of the Microservices as pods on the openshify platform, we will now create a Jenkins Groovy DSL file that 
+In order to automate the build, deployment process and the creation of the Microservices as pods on the OpenShift platform, we will create a Jenkins Groovy DSL file that 
  Jenkins will trigger with the pipeline plugin. This file will contain different stages with the commands required to compile, create the docker image, push it to the docker images registry and finally deploy the kubernetes 
 json file describing the kubernetes application to be deployed on the platform.
  
-Remark : For more information about the Grrovy DSL syntax, please use the following links
+Remark : For more information about the Groovy DSL syntax, please use the following links
  
 * [Job DSL Plugin](https://github.com/jenkinsci/job-dsl-plugin)
 * [Tutorial](https://github.com/jenkinsci/job-dsl-plugin/wiki/Tutorial---Using-the-Jenkins-Job-DSL)
 * [Workflow DSL plugin](https://github.com/jenkinsci/workflow-plugin/)
 * [Tutorial](https://github.com/jenkinsci/workflow-plugin/blob/master/TUTORIAL.md)
  
-Here is the definition the Groovy DSL file  
+The scenario that we will achieve within the script is defined as such :
+ 
+* Log to the openshift server using the admin user and create a namespace/project called `demo`
+* Git clone the project from the gogs repository
+* Compile the project
+* Build the docker images for the microservices client & service
+* Create the Kubernetes Service, replication controller and pods 
+
+Here is the definition the Groovy DSL file that we will use. 
+
+```
+def GIT_URL = "https://github.com/FuseByExample/microservice-camel-in-action.git"
+def BRANCH = "kubernetes"
+def CREDENTIALS = ""
+
+stage('prepare')
+node {
+    sh 'oc login -u admin -p admin https://localhost:8443; oc new-project demo'
+}
+
+stage('clone')
+node {
+    git url: GIT_URL, branch: BRANCH, credentialsId: CREDENTIALS
+}
 
 
+stage('compile')
+node {
+    withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
+        sh 'mvn clean compile'
+    }
+}
+
+stage('deploy')
+node {
+    withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
+
+        dir('camel-rest-service') {
+         sh 'mvn -Pf8-local-deploy'
+        }
+        
+        dir('camel-rest-client') {
+         sh 'mvn -Pf8-local-deploy'
+        }
+        
+    }
+}
+```
+
+To setup the environment on openshift & fabric8, here are the steps to be done.
+
+* Create a VM into VirtualBox using the [Vagrantfile](https://github.com/fabric8io/fabric8-installer/tree/master/vagrant/openshift) of the project
+
+```
+cd /path/to/vagrant/openshift
+vagrant up
+vagrant ssh
+
+sudo bash
+gofabric8 pull cd-pipeline
+```
+
+* Log on to the OpenShift Web Console at this address `https://172.28.128.4:8443` with the user `admin` and password `admin`
+* Click on the `default` project to be redirected to this [link](https://172.28.128.4:8443/console/project/default/overview)
+* From the list of the pods, click on `fabric8.vagrant.f8` link to open the fabric8 console within another tab window
+* From the workspace screen, select also the namespace `default` and from the left menu bar select `Runtime` -  http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=
+* You will see the list of the pods deployed and running in openshift
+* To install the docker container required to use the continuous delivery process, we have to install some kubernetes applications. This process will be simplified by using 
+within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=) the burron `Run`
+* Click on the `Run` button and move within the table to the `cd-pipeline`
+* Click on the `green` button to install it
+* Review the parameters defined per default and click on the `Run` button.
+* You will be redirect to the previous screen and after a few moments, you will see new pods within yoiur list (jenkins, gogs, nexus)
+* Click on the `gogs` [link](http://gogs.vagrant.f8/) to access to the Gogs Server 
+* Create a new repository with the name `microservice`. The username and password to be used are `gogsadmin` and `RedHat$1`
+* Use the `http://gogs.vagrant.f8/gogsadmin/microservice.git` uri to create a new project on your machine and copy/paste within this project this microservice project (without the .git folder)
+* Commit the project to gogs
+* From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
+* Create a new job with the name `microservice`, select the `pipeline` option, and edd the content of the jenkinsfile within the Groovy DSL field
+* Launch the job and check the content of console to verify that the project is well compiled, ...
+* Return to the Fabric8 console, select the demo namespace and access to your different pods
 
 Enjoy the Camel MicroService & MicroContainer !
 
