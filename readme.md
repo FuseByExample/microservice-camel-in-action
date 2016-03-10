@@ -15,7 +15,7 @@ project. They both will be created as Microservice as they will be able to run i
 * [Use a Docker daemon](#use-a-docker-daemon)
 * [Use OpenShift &amp; Kubernetes Service](#use-openshift--kubernetes-service)
 * [Clean project](#clean-project)
-* [Continuous Development](#continuous--development)
+* [Continuous Development](#continuous-development)
 
 # Prerequisites
 
