@@ -637,7 +637,13 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
 * Increase the number of executors by editing the jenkins system configuration at this address `http://jenkins.vagrant.f8/manage` and change the value from 0 to 1 for the field ``
 * Create a new job with the name `microservice`, select the `pipeline` option and clock o nthe button `ok`
+
+![Jenkins pipeline](/image/jenkins-pipeline1.png)
+
 * Within the pipeline screen, move to the section `Piepleine script` and add the content of the jenkinsfile within the field. Click on the `save` button
+
+![Jenkins pipeline](/image/jenkins-pipeline2.png)
+
 * Launch the job and check the content of console to verify that the project is well compiled, ...
 
 ```
@@ -664,7 +670,9 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 [INFO] ------------------------------------------------------------------------
 ```
 
-* Return to the Fabric8 console, select the demo namespace and access to your different pods
+* Return to the Fabric8 console, select the demo namespace and access to your client and service pods
+
+![Microservice pods](/image/pods.png)
 
 Enjoy the Camel MicroService & MicroContainer !
 
