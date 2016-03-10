@@ -626,7 +626,7 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * Use the `http://gogs.vagrant.f8/gogsadmin/microservice.git` uri to create a new project on your machine and copy/paste within this project this microservice project (without the .git folder)
 * Commit the project to gogs
 * From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
-* Create a new job with the name `microservice`, select the `pipeline` option, and edd the content of the jenkinsfile within the Groovy DSL field
+* Create a new job with the name `microservice`, select the `pipeline` option, and add the content of the jenkinsfile within the Groovy DSL field
 * Launch the job and check the content of console to verify that the project is well compiled, ...
 * Return to the Fabric8 console, select the demo namespace and access to your different pods
 
