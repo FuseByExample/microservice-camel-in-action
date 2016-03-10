@@ -264,6 +264,7 @@ Hello charles! Welcome from pod : null
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-docker-rest.png)
 
 * Launch the docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
+<<<<<<< HEAD
 
 * Alternatively, you can use the Vagrant Fabric8 virtual Machine created in VietualBox to access Docker daemon
 
@@ -272,6 +273,16 @@ cd /path/to/fabric8-installer/tree/master/vagrant/openshift
 vagrant up
 ```
 
+=======
+
+* Alternatively, you can use the Vagrant Fabric8 virtual Machine created in VietualBox to access Docker daemon
+
+```
+cd /path/to/fabric8-installer/tree/master/vagrant/openshift
+vagrant up
+```
+
+>>>>>>> 8182487... Add some build job lines
 * Within the terminal where your development projects has been created, set the ENV variables required to access and communicate with the
   Docker daemon by executing this command `eval $(docker-machine env default)`.
 
@@ -638,7 +649,27 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * Launch the job and check the content of console to verify that the project is well compiled, ...
 
 ```
-
+[INFO] --- fabric8-maven-plugin:2.2.96:apply (default-cli) @ camel-rest-client ---
+[INFO] Using kubernetes at: https://kubernetes.default.svc/ in namespace demo
+[INFO] Kubernetes JSON: /var/jenkins_home/workspace/microservice/camel-rest-client/target/classes/kubernetes.json
+[INFO] OpenShift platform detected
+[INFO] Using namespace: demo
+[INFO] Creating a Template from kubernetes.json namespace demo name camel-rest-client
+[INFO] Created Template: camel-rest-client/target/fabric8/applyJson/demo/template-camel-rest-client.json
+[INFO] Looking at repo with directory /var/jenkins_home/workspace/microservice/.git
+[INFO] Looking at repo with directory /var/jenkins_home/workspace/microservice/.git
+[INFO] Creating a Service from kubernetes.json namespace demo name camel-rest-client
+[INFO] Created Service: camel-rest-client/target/fabric8/applyJson/demo/service-camel-rest-client.json
+[INFO] Creating a ReplicationController from kubernetes.json namespace demo name camel-rest-client
+[INFO] Created ReplicationController: camel-rest-client/target/fabric8/applyJson/demo/replicationcontroller-camel-rest-client.json
+[INFO] Creating Route demo:camel-rest-client host: 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 36.795 s
+[INFO] Finished at: 2016-03-10T11:00:29+00:00
+[INFO] Final Memory: 46M/515M
+[INFO] ------------------------------------------------------------------------
 ```
 
 * Return to the Fabric8 console, select the demo namespace and access to your different pods
