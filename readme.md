@@ -548,9 +548,9 @@ Remark : For more information about the Groovy DSL syntax, please use the follow
  
 The scenario that we will achieve within the script is defined as such :
  
-* Log to the openshift server using the admin user and create a namespace/project called `demo`
-* Git clone the project from the gogs repository
-* Compile the project
+* Stage `prepare` : Log to the openshift server using the admin user and create a namespace/project called `demo`
+* Stage `clone` : Git clone the project from the gogs repository
+* Stage `deploy` : Compile the project
 * Build the docker images for the microservices client & service
 * Create the Kubernetes Service, replication controller and pods 
 
