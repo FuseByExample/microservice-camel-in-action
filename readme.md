@@ -615,8 +615,8 @@ gofabric8 pull cd-pipeline
 * From the workspace screen, select also the namespace `default`
 * From the left menu bar select `Runtime` -  http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=
 * You will see the list of the pods deployed and running in openshift
-* To install the docker container required to use the continuous delivery process, we have to install some kubernetes applications. This process will be simplified by using 
-within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=) the burron `Run`
+* To create the docker containers required to use the continuous delivery process, we have to install some kubernetes applications. This process will be simplified by using 
+within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=) the button `Run`
 * Click on the `Run` button and move within the table to the `cd-pipeline`
 * Click on the `green` button to install it
 * Review the parameters defined per default and click on the `Run` button.
