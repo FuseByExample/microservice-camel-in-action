@@ -597,7 +597,7 @@ node {
 
 To setup the environment on openshift & fabric8, here are the steps to be done.
 
-* Create a VM into VirtualBox using the [Vagrantfile](https://github.com/fabric8io/fabric8-installer/tree/master/vagrant/openshift) of the project
+* Create a VM into VirtualBox using the [Vagrantfile](https://github.com/fabric8io/fabric8-installer/tree/master/vagrant/openshift) of the Fabric8 project
 
 ```
 cd /path/to/vagrant/openshift
@@ -608,10 +608,12 @@ sudo bash
 gofabric8 pull cd-pipeline
 ```
 
-* Log on to the OpenShift Web Console at this address `https://172.28.128.4:8443` with the user `admin` and password `admin`
+* Next, log on to the OpenShift Web Console within your Web Browser at this address `https://172.28.128.4:8443` with the user `admin` and password `admin`
 * Click on the `default` project to be redirected to this [link](https://172.28.128.4:8443/console/project/default/overview)
-* From the list of the pods, click on `fabric8.vagrant.f8` link to open the fabric8 console within another tab window
-* From the workspace screen, select also the namespace `default` and from the left menu bar select `Runtime` -  http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=
+* From the list of the pods, click on `fabric8.vagrant.f8` link to open the fabric8 console within another tab window.
+* Log on using the user `admin` and password `admin`
+* From the workspace screen, select also the namespace `default`
+* From the left menu bar select `Runtime` -  http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=
 * You will see the list of the pods deployed and running in openshift
 * To install the docker container required to use the continuous delivery process, we have to install some kubernetes applications. This process will be simplified by using 
 within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps?q=) the burron `Run`
