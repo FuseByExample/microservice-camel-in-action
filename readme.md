@@ -629,6 +629,9 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * You will be redirect to the previous screen and after a few moments, you will see new pods within your list (jenkins, gogs, nexus)
 * Click on the `gogs` [link](http://gogs.vagrant.f8/) to access to the Gogs Server 
 * Create a new repository with the name `microservice`. The username and password to be used are `gogsadmin` and `RedHat$1`
+
+![Gogs Microservice repo](/image/gogs-repo.png)
+
 * Use the `http://gogs.vagrant.f8/gogsadmin/microservice.git` uri to create a new project on your machine and copy/paste within this project this microservice project (without the .git folder)
 * Commit the project to gogs
 * From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
