@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <groupId>org.jboss.fuse</groupId>
-      <artifactId>microservice</artifactId>
-      <version>1.0-SNAPSHOT</version>
+        <groupId>org.jboss.fuse</groupId>
+        <artifactId>microservice</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>camel-rest-service</artifactId>
@@ -20,9 +20,10 @@
         <!-- configure the versions you want to use here -->
         <camel.version>2.16.1</camel.version>
 
-        <docker.from>fabric8/tomcat-8.0</docker.from>
+        <docker.from>jboss/wildfly:10.0.0.Final</docker.from>
         <fabric8.dockerUser>fabric8/</fabric8.dockerUser>
-        <docker.image>${docker.registryPrefix}fabric8/${project.artifactId}:${project.version}</docker.image>
+        <docker.image>${docker.registryPrefix}${fabric8.dockerUser}${project.artifactId}:${project.version}
+        </docker.image>
         <docker.registryPrefix>${env.DOCKER_REGISTRY}/</docker.registryPrefix>
         <docker.assemblyDescriptorRef>rootWar</docker.assemblyDescriptorRef>
         <docker.port.container.jolokia>8778</docker.port.container.jolokia>
@@ -33,7 +34,7 @@
         <fabric8.service.containerPort>8080</fabric8.service.containerPort>
 
         <fabric8.label.component>${project.artifactId}</fabric8.label.component>
-        <fabric8.label.container>tomcat</fabric8.label.container>
+        <fabric8.label.container>wildfly</fabric8.label.container>
         <fabric8.label.group>demo</fabric8.label.group>
         <fabric8.service.type>LoadBalancer</fabric8.service.type>
         <fabric8.iconRef>camel</fabric8.iconRef>
@@ -102,17 +103,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*KT.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.jolokia</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <configuration>
@@ -122,11 +112,20 @@
                             <build>
                                 <from>${docker.from}</from>
                                 <assembly>
-                                    <descriptorRef>${docker.assemblyDescriptorRef}</descriptorRef>
+                                    <inline>
+                                        <dependencySets>
+                                            <dependencySet>
+                                                <includes>
+                                                    <include>${project.groupId}:${project.artifactId}
+                                                    </include>
+                                                </includes>
+                                                <outputFileNameMapping>test.war</outputFileNameMapping>
+                                            </dependencySet>
+                                        </dependencySets>
+                                    </inline>
+                                    <user>jboss:jboss:jboss</user>
+                                    <basedir>/opt/jboss/wildfly/standalone/deployments</basedir>
                                 </assembly>
-                                <env>
-                                    <CATALINA_OPTS>-javaagent:/opt/tomcat/jolokia-agent.jar=host=0.0.0.0,port=8778</CATALINA_OPTS>
-                                </env>
                             </build>
                         </image>
                     </images>
@@ -153,25 +152,12 @@
                 </executions>
             </plugin>
 
-            <!-- Jetty HTTP Server -->
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.11.v20150529</version>
-                <configuration>
-                    <httpConnector>
-                        <port>8080</port>
-                    </httpConnector>
-                </configuration>
-            </plugin>
             <!-- WildFly -->
-
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>1.1.0.Alpha7</version>
             </plugin>
-
         </plugins>
     </build>
 

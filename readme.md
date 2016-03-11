@@ -650,7 +650,6 @@ camel-rest-client-elxt1    1/1       Running   0          34m
 camel-rest-service-4h2j4   1/1       Running   0          30m
 camel-rest-service-61gq4   1/1       Running   0          34m
 camel-rest-service-t33ws   1/1       Running   0          30m
-
 ```
 
 # Continuous Development
