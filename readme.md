@@ -411,7 +411,7 @@ Hello charles! Welcome from pod : 6da09e192031
 * Using the OpenShift client tool, log to the server and create a demo namespace/project
 
 ```
-    oc login https://172.28.128.4:8443
+    oc login -u admin -p admin https://172.28.128.4:8443
     oc new-project demo
 ```
 
@@ -439,8 +439,8 @@ Hello charles! Welcome from pod : 6da09e192031
 
 ```
     export KUBERNETES_DOMAIN=vagrant.f8
-    export DOCKER_HOST=tcp://vagrant.f8:2375
-    export DOCKER_IP=vagrant.f8
+    export DOCKER_HOST=tcp://172.28.128.4:2375
+    export DOCKER_IP=172.28.128.4
 ```
 
 * We will build the project using the following profile
@@ -450,7 +450,7 @@ Hello charles! Welcome from pod : 6da09e192031
     mvn -Pf8-build
 ```
 
-* Another command also exist to build and deploy the project
+* To deploy the project, then use this command
 
 ```
     mvn -Pf8-local-deploy
@@ -476,8 +476,7 @@ Hello charles! Welcome from pod : 6da09e192031
 
 ```
     export KUBERNETES_DOMAIN=vagrant.f8
-    export DOCKER_HOST=tcp://vagrant.f8:2375
-    mvn -Pf8-build
+    export DOCKER_HOST=tcp://172.28.128.4:2375
     mvn -Pf8-local-deploy
 ```
 
@@ -541,7 +540,7 @@ export KUBERNETES_DOMAIN=vagrant.f8
 export DOCKER_HOST="tcp://172.28.128.4:2375"
 export DOCKER_REGISTRY="172.28.128.4:5000"
 
-mvn clean -Pf8-build
+mvn -Pf8-build
 
 oc login -u admin -p admin https://172.28.128.4:8443
 oc delete project demo
@@ -549,7 +548,10 @@ oc new-project demo
 
 cd packages
 mvn clean install
-oc delete all -l provider=fabric8
+oc delete pods -l group=demo
+oc delete services -l group=demo
+oc delete route -l group=demo
+oc delete rc -l group=demo
 oc process -f target/classes/kubernetes.json | oc create -f -
 ```
 
