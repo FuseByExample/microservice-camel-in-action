@@ -1,7 +1,19 @@
 # Camel REST Microservices 
 
-The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contains the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
-project. They both will be created as Microservice as they will be able to run into their own JVM, Container, without any ESB Bus, will be managed separately and independently.
+The MicroService Camel REST in action project consists of 2 modules `camel-rest-client` and `camel-rest-service`; one contains the code to play the role of a client sending HTTP requests and calling a REST Service exposed by a HTTP Server.
+They both will be created as Microservice and we will be able to run them :
+
+- Locally with a local JVM
+- Within a Docker daemon running into a Linux Atomic Kernel as a docker process
+- Within the OpensShift platform using the Kubernetes Controller and Service to loadbalance the requests
+
+The project is maintained under 3 different git branches:
+
+- The `master` branch to run locally using `mvn camel:run` goal the microservices
+- The `docker` branch to deploy the docker images within a docker daemon and
+- The `kubernetes` to install the controller responsible to manage the pods and service top of the Openshift Platform
+
+This project presents also 2 approaches to package/assemble the microservices and develop a continuous delivery strategy.
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
 
@@ -14,9 +26,9 @@ project. They both will be created as Microservice as they will be able to run i
 * [Run locally the MicroServices](#run-locally-the-microservices)
 * [Use a Docker daemon](#use-a-docker-daemon)
 * [Use OpenShift &amp; Kubernetes Service](#use-openshift--kubernetes-service)
-* [Clean project](#clean-project)
 * [Package the microservices](#package-the-microservices)
 * [Continuous Development](#continuous-development)
+* [Clean project](#clean-project)
 
 # Prerequisites
 
