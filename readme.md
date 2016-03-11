@@ -606,7 +606,7 @@ By running this maven command `mvn clean install`, we will generate the followin
     
 ```
 
-To deploy our application on OpenShift, we will use the `oc` client and with the command `process` and pass as paremter the definition of the file `oc process -f target/classes/kubernetes.json | oc create -f -`
+To deploy our application on OpenShift, we will use the OpenShift `oc` client and with the command `process` and pass as parameter the definition of the file `oc process -f target/classes/kubernetes.json | oc create -f -`
 
 The different commands to be used are summarized here after
 
