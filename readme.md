@@ -622,15 +622,17 @@ To deploy our application on OpenShift, we will use the OpenShift `oc` client an
 The different commands to be used are summarized here after
 
 ```
-cd packages
-
 export KUBERNETES_DOMAIN=vagrant.f8
 export DOCKER_HOST="tcp://172.28.128.4:2375"
 export DOCKER_REGISTRY="172.28.128.4:5000"
 
+cd packages
+
 oc login -u admin -p admin https://172.28.128.4:8443
+
 oc delete project demo
 oc new-project demo
+
 oc delete pods -l group=demo
 oc delete services -l group=demo
 oc delete route -l group=demo
