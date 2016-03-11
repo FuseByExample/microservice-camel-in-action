@@ -18,6 +18,7 @@
     <modules>
         <module>camel-rest-client</module>
         <module>camel-rest-service</module>
+        <module>packages</module>
     </modules>
 
     <dependencyManagement>
