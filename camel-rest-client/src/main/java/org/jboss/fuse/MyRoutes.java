@@ -29,7 +29,7 @@ public class MyRoutes extends RouteBuilder {
 
         from(inputEndpoint)
             .setHeader("user").method(someBean,"getRandomUser")
-            .setHeader("CamelHttpPath").simple("/camel/users/${header.user}/hello")
+            .setHeader("CamelHttpPath").simple("/camel-rest-service/camel/users/${header.user}/hello")
             .to(httpEndpoint)
             .log("Response : ${body}");
     }
