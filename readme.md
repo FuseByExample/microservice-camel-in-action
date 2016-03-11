@@ -535,26 +535,300 @@ oc delete rc -l group=demo
 
 # Package the microservices
 
+During the previous section we have used the maven goal `docker:build` to create the docker image, `fabric8:json` goal to create the kubernetes
+json file containing the information about the replication controller, service and pods to be created and the `fabric8:apply` goal has been executed to
+to deploy the project on Openshift for each microservice. While this approach is relevant when we develop and test microservice individually, this is not longer the case
+when the project will be delivered for the different environments where it will run for `testing` and `production` purposes. It will be required to assemble  
+the microservices together.
+
+To achieve this goal, we will package our `microservices` using an OpenShift Template which is a json file extending the definition of a Kubernetes json file. This file will be created by concatenating
+the json files created for the camel REST client and camel REST service. 
+
+For that purpose, we have created a maven `packages` module where the `<packaging>` has been define to `pom` and where we have declared the dependencies of our microservices to be packaged together as such
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.jboss.fuse</groupId>
+    <artifactId>camel-rest-service</artifactId>
+    <version>${project.version}</version>
+    <classifier>kubernetes</classifier>
+    <type>json</type>
+</dependency>
+<dependency>
+    <groupId>org.jboss.fuse</groupId>
+    <artifactId>camel-rest-client</artifactId>
+    <version>${project.version}</version>
+    <classifier>kubernetes</classifier>
+    <type>json</type>
+</dependency>
+----
+
+By running this maven command `mvn clean install`, we will generate the following OSE Template under the directory target/classes/kubernetes.json
+
+[source,json]
+----
+{
+  "apiVersion" : "v1",
+  "kind" : "Template",
+  "labels" : { },
+  "metadata" : {
+    "annotations" : {
+      "fabric8.camel-rest-client/iconUrl" : "https://cdn.rawgit.com/fabric8io/fabric8/master/fabric8-maven-plugin/src/main/resources/icons/camel.svg",
+      "fabric8.camel-rest-service/iconUrl" : "https://cdn.rawgit.com/fabric8io/fabric8/master/fabric8-maven-plugin/src/main/resources/icons/camel.svg"
+    },
+    "labels" : { },
+    "name" : "camel-microservices"
+  },
+  "objects" : [ {
+    "apiVersion" : "v1",
+    "kind" : "Service",
+    "metadata" : {
+      "annotations" : {
+        "prometheus.io/port" : "9779",
+        "prometheus.io/scrape" : "true"
+      },
+      "labels" : {
+        "container" : "java",
+        "component" : "camel-rest-client",
+        "provider" : "fabric8",
+        "project" : "camel-rest-client",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "demo",
+        "package" : "camel-microservices"
+      },
+      "name" : "camel-rest-client"
+    },
+    "spec" : {
+      "clusterIP" : "None",
+      "deprecatedPublicIPs" : [ ],
+      "externalIPs" : [ ],
+      "ports" : [ {
+        "port" : 9779,
+        "targetPort" : 9779
+      } ],
+      "selector" : {
+        "container" : "java",
+        "project" : "camel-rest-client",
+        "component" : "camel-rest-client",
+        "provider" : "fabric8",
+        "group" : "demo"
+      }
+    }
+  }, {
+    "apiVersion" : "v1",
+    "kind" : "Service",
+    "metadata" : {
+      "annotations" : { },
+      "labels" : {
+        "container" : "tomcat",
+        "component" : "camel-rest-service",
+        "provider" : "fabric8",
+        "project" : "camel-rest-service",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "demo",
+        "package" : "camel-microservices"
+      },
+      "name" : "hellorest"
+    },
+    "spec" : {
+      "deprecatedPublicIPs" : [ ],
+      "externalIPs" : [ ],
+      "ports" : [ {
+        "port" : 9090,
+        "protocol" : "TCP",
+        "targetPort" : 8080
+      } ],
+      "selector" : {
+        "container" : "tomcat",
+        "project" : "camel-rest-service",
+        "component" : "camel-rest-service",
+        "provider" : "fabric8",
+        "group" : "demo"
+      },
+      "type" : "LoadBalancer"
+    }
+  }, {
+    "apiVersion" : "v1",
+    "kind" : "ReplicationController",
+    "metadata" : {
+      "annotations" : {
+        "fabric8.io/git-branch" : "kubernetes",
+        "fabric8.io/git-commit" : "1466ad958908979733c7f81bdbe6686755288b10"
+      },
+      "labels" : {
+        "container" : "java",
+        "component" : "camel-rest-client",
+        "provider" : "fabric8",
+        "project" : "camel-rest-client",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "demo",
+        "package" : "camel-microservices"
+      },
+      "name" : "camel-rest-client"
+    },
+    "spec" : {
+      "replicas" : 1,
+      "selector" : {
+        "container" : "java",
+        "component" : "camel-rest-client",
+        "provider" : "fabric8",
+        "project" : "camel-rest-client",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "demo"
+      },
+      "template" : {
+        "metadata" : {
+          "annotations" : { },
+          "labels" : {
+            "container" : "java",
+            "component" : "camel-rest-client",
+            "provider" : "fabric8",
+            "project" : "camel-rest-client",
+            "version" : "1.0-SNAPSHOT",
+            "group" : "demo",
+            "package" : "camel-microservices"
+          }
+        },
+        "spec" : {
+          "containers" : [ {
+            "args" : [ ],
+            "command" : [ ],
+            "env" : [ {
+              "name" : "KUBERNETES_NAMESPACE",
+              "valueFrom" : {
+                "fieldRef" : {
+                  "fieldPath" : "metadata.namespace"
+                }
+              }
+            } ],
+            "image" : "172.28.128.4:5000/fabric8/camel-rest-client:1.0-SNAPSHOT",
+            "name" : "camel-rest-client",
+            "ports" : [ {
+              "containerPort" : 8778,
+              "name" : "jolokia"
+            } ],
+            "securityContext" : { },
+            "volumeMounts" : [ ]
+          } ],
+          "imagePullSecrets" : [ ],
+          "nodeSelector" : { },
+          "volumes" : [ ]
+        }
+      }
+    }
+  }, {
+    "apiVersion" : "v1",
+    "kind" : "ReplicationController",
+    "metadata" : {
+      "annotations" : {
+        "fabric8.io/git-branch" : "kubernetes",
+        "fabric8.io/git-commit" : "1466ad958908979733c7f81bdbe6686755288b10"
+      },
+      "labels" : {
+        "container" : "tomcat",
+        "component" : "camel-rest-service",
+        "provider" : "fabric8",
+        "project" : "camel-rest-service",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "demo",
+        "package" : "camel-microservices"
+      },
+      "name" : "camel-rest-service"
+    },
+    "spec" : {
+      "replicas" : 1,
+      "selector" : {
+        "container" : "tomcat",
+        "component" : "camel-rest-service",
+        "provider" : "fabric8",
+        "project" : "camel-rest-service",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "demo"
+      },
+      "template" : {
+        "metadata" : {
+          "annotations" : { },
+          "labels" : {
+            "container" : "tomcat",
+            "component" : "camel-rest-service",
+            "provider" : "fabric8",
+            "project" : "camel-rest-service",
+            "version" : "1.0-SNAPSHOT",
+            "group" : "demo",
+            "package" : "camel-microservices"
+          }
+        },
+        "spec" : {
+          "containers" : [ {
+            "args" : [ ],
+            "command" : [ ],
+            "env" : [ {
+              "name" : "KUBERNETES_NAMESPACE",
+              "valueFrom" : {
+                "fieldRef" : {
+                  "fieldPath" : "metadata.namespace"
+                }
+              }
+            } ],
+            "image" : "172.28.128.4:5000/fabric8/camel-rest-service:1.0-SNAPSHOT",
+            "name" : "camel-rest-service",
+            "ports" : [ {
+              "containerPort" : 8080,
+              "name" : "http"
+            }, {
+              "containerPort" : 8778,
+              "name" : "jolokia"
+            } ],
+            "securityContext" : { },
+            "volumeMounts" : [ ]
+          } ],
+          "imagePullSecrets" : [ ],
+          "nodeSelector" : { },
+          "volumes" : [ ]
+        }
+      }
+    }
+  } ],
+  "parameters" : [ ]
+}
+----
+
+To deploy our application on OpenShift, we will use the `oc` client and with the command `process` and pass as paremter the definition of the file `oc process -f target/classes/kubernetes.json | oc create -f -`
+
+The different commands to be used are summarized here after
+
 ```
+cd packages
+
 export KUBERNETES_DOMAIN=vagrant.f8
 export DOCKER_HOST="tcp://172.28.128.4:2375"
 export DOCKER_REGISTRY="172.28.128.4:5000"
 
-mvn -Pf8-build
-
 oc login -u admin -p admin https://172.28.128.4:8443
 oc delete project demo
 oc new-project demo
-
-cd packages
-mvn clean install
 oc delete pods -l group=demo
 oc delete services -l group=demo
 oc delete route -l group=demo
 oc delete rc -l group=demo
+
+mvn clean install
+
 oc process -f target/classes/kubernetes.json | oc create -f -
 ```
 
+You can now verify that the two pods are up and running
+
+```
+oc get pods
+NAME                       READY     STATUS    RESTARTS   AGE
+camel-rest-client-elxt1    1/1       Running   0          34m
+camel-rest-service-4h2j4   1/1       Running   0          30m
+camel-rest-service-61gq4   1/1       Running   0          34m
+camel-rest-service-t33ws   1/1       Running   0          30m
+
+```
 
 # Continuous Development
 
