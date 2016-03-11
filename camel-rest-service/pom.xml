@@ -20,11 +20,10 @@
         <!-- configure the versions you want to use here -->
         <camel.version>2.16.1</camel.version>
 
-        <docker.from>fabric8/tomcat-8.0</docker.from>
+        <docker.from>jboss/wildfly:10.0.0.Final</docker.from>
         <fabric8.dockerUser>fabric8/</fabric8.dockerUser>
-        <docker.image>${docker.registryPrefix}fabric8/${project.artifactId}:${project.version}</docker.image>
+        <docker.image>${docker.registryPrefix}${fabric8.dockerUser}${project.artifactId}:${project.version}</docker.image>
         <docker.registryPrefix>${env.DOCKER_REGISTRY}/</docker.registryPrefix>
-        <docker.assemblyDescriptorRef>rootWar</docker.assemblyDescriptorRef>
         <docker.port.container.jolokia>8778</docker.port.container.jolokia>
         <docker.port.container.http>8080</docker.port.container.http>
 
@@ -33,7 +32,7 @@
         <fabric8.service.containerPort>8080</fabric8.service.containerPort>
 
         <fabric8.label.component>${project.artifactId}</fabric8.label.component>
-        <fabric8.label.container>tomcat</fabric8.label.container>
+        <fabric8.label.container>wildfly</fabric8.label.container>
         <fabric8.label.group>demo</fabric8.label.group>
         <fabric8.service.type>LoadBalancer</fabric8.service.type>
         <fabric8.iconRef>camel</fabric8.iconRef>
@@ -41,7 +40,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- import fabric8 platfrom bom first -->
+            <!-- import fabric8 platform bom first -->
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
@@ -91,7 +90,6 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
-
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -99,17 +97,6 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*KT.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -122,11 +109,19 @@
                             <build>
                                 <from>${docker.from}</from>
                                 <assembly>
-                                    <descriptorRef>${docker.assemblyDescriptorRef}</descriptorRef>
+                                    <inline>
+                                        <dependencySets>
+                                            <dependencySet>
+                                                <includes>
+                                                    <include>${project.groupId}:${project.artifactId}</include>
+                                                </includes>
+                                                <outputFileNameMapping>test.war</outputFileNameMapping>
+                                            </dependencySet>
+                                        </dependencySets>
+                                    </inline>
+                                    <user>jboss:jboss:jboss</user>
+                                    <basedir>/opt/jboss/wildfly/standalone/deployments</basedir>
                                 </assembly>
-                                <env>
-                                    <CATALINA_OPTS>-javaagent:/opt/tomcat/jolokia-agent.jar=host=0.0.0.0,port=8778</CATALINA_OPTS>
-                                </env>
                             </build>
                         </image>
                     </images>
