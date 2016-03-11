@@ -20,14 +20,14 @@
     <dependencies>
         <dependency>
             <groupId>org.jboss.fuse</groupId>
-            <artifactId>camel-rest-client</artifactId>
+            <artifactId>camel-rest-service</artifactId>
             <version>${project.version}</version>
             <classifier>kubernetes</classifier>
             <type>json</type>
         </dependency>
         <dependency>
             <groupId>org.jboss.fuse</groupId>
-            <artifactId>camel-rest-service</artifactId>
+            <artifactId>camel-rest-client</artifactId>
             <version>${project.version}</version>
             <classifier>kubernetes</classifier>
             <type>json</type>
