@@ -1,7 +1,19 @@
 # Camel REST Microservices 
 
-The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contains the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
-project. They both will be created as Microservice as they will be able to run into their own JVM, Container, without any ESB Bus, will be managed separately and independently.
+The MicroService Camel REST in action project consists of 2 modules `camel-rest-client` and `camel-rest-service`; one contains the code to play the role of a client sending HTTP requests and calling a REST Service exposed by a HTTP Server.
+They both will be created as Microservice and we will be able to run them :
+
+- Locally with a local JVM
+- Within a Docker daemon running into a Linux Atomic Kernel as a docker process
+- Within the OpensShift platform using the Kubernetes Controller and Service to loadbalance the requests
+
+The project is maintained under 3 different git branches:
+
+- The `master` branch to run locally using `mvn camel:run` goal the microservices
+- The `docker` branch to deploy the docker images within a docker daemon and
+- The `kubernetes` to install the controller responsible to manage the pods and service top of the Openshift Platform
+
+This project presents also 2 approaches to package/assemble the microservices and develop a continuous delivery strategy.
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-kubernetes-rest.png)
 
@@ -14,8 +26,9 @@ project. They both will be created as Microservice as they will be able to run i
 * [Run locally the MicroServices](#run-locally-the-microservices)
 * [Use a Docker daemon](#use-a-docker-daemon)
 * [Use OpenShift &amp; Kubernetes Service](#use-openshift--kubernetes-service)
-* [Clean project](#clean-project)
+* [Package the microservices](#package-the-microservices)
 * [Continuous Development](#continuous-development)
+* [Clean project](#clean-project)
 
 # Prerequisites
 
@@ -264,7 +277,6 @@ Hello charles! Welcome from pod : null
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-docker-rest.png)
 
 * Launch the docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
-<<<<<<< HEAD
 
 * Alternatively, you can use the Vagrant Fabric8 virtual Machine created in VietualBox to access Docker daemon
 
@@ -273,16 +285,6 @@ cd /path/to/fabric8-installer/tree/master/vagrant/openshift
 vagrant up
 ```
 
-=======
-
-* Alternatively, you can use the Vagrant Fabric8 virtual Machine created in VietualBox to access Docker daemon
-
-```
-cd /path/to/fabric8-installer/tree/master/vagrant/openshift
-vagrant up
-```
-
->>>>>>> 8182487... Add some build job lines
 * Within the terminal where your development projects has been created, set the ENV variables required to access and communicate with the
   Docker daemon by executing this command `eval $(docker-machine env default)`.
 
@@ -421,7 +423,7 @@ Hello charles! Welcome from pod : 6da09e192031
 * Using the OpenShift client tool, log to the server and create a demo namespace/project
 
 ```
-    oc login https://172.28.128.4:8443
+    oc login -u admin -p admin https://172.28.128.4:8443
     oc new-project demo
 ```
 
@@ -449,8 +451,8 @@ Hello charles! Welcome from pod : 6da09e192031
 
 ```
     export KUBERNETES_DOMAIN=vagrant.f8
-    export DOCKER_HOST=tcp://vagrant.f8:2375
-    export DOCKER_IP=vagrant.f8
+    export DOCKER_HOST=tcp://172.28.128.4:2375
+    export DOCKER_IP=172.28.128.4
 ```
 
 * We will build the project using the following profile
@@ -460,7 +462,7 @@ Hello charles! Welcome from pod : 6da09e192031
     mvn -Pf8-build
 ```
 
-* Another command also exist to build and deploy the project
+* To deploy the project, then use this command
 
 ```
     mvn -Pf8-local-deploy
@@ -486,8 +488,7 @@ Hello charles! Welcome from pod : 6da09e192031
 
 ```
     export KUBERNETES_DOMAIN=vagrant.f8
-    export DOCKER_HOST=tcp://vagrant.f8:2375
-    mvn -Pf8-build
+    export DOCKER_HOST=tcp://172.28.128.4:2375
     mvn -Pf8-local-deploy
 ```
 
@@ -544,6 +545,115 @@ oc delete route -l group=demo
 oc delete rc -l group=demo
 ```
 
+# Package the microservices
+
+During the previous section we have used the maven goal :
+
+- `docker:build` to create the docker image, 
+- `fabric8:json` goal to create the kubernetes json file containing the information about the replication controller, service and pods to be created and
+- the `fabric8:apply` goal has been executed to deploy the project on Openshift for each microservice.
+
+While this approach is relevant when we develop and test microservice individually, this is not longer the case
+when the project will be delivered for the different environments where it will run for `testing` and `production` purposes.
+It will be required to assemble the microservices together.
+
+To achieve this goal, we will package our `microservices` using an OpenShift Template which is a json file extending the definition of a Kubernetes json file. This file will be created by concatenating
+the json files created for the camel REST client and camel REST service. 
+
+For that purpose, we have created a maven `packages` module where the `<packaging>` has been define to `pom` and where we have declared the dependencies of our microservices to be packaged together as such
+
+```
+<dependency>
+    <groupId>org.jboss.fuse</groupId>
+    <artifactId>camel-rest-service</artifactId>
+    <version>${project.version}</version>
+    <classifier>kubernetes</classifier>
+    <type>json</type>
+</dependency>
+<dependency>
+    <groupId>org.jboss.fuse</groupId>
+    <artifactId>camel-rest-client</artifactId>
+    <version>${project.version}</version>
+    <classifier>kubernetes</classifier>
+    <type>json</type>
+</dependency>
+```
+
+By running this maven command `mvn clean install`, we will generate the following OSE Template under the directory target/classes/kubernetes.json
+
+```
+{
+  "apiVersion" : "v1",
+  "kind" : "Template",
+  "labels" : { },
+  "metadata" : {
+    "annotations" : {
+      "fabric8.camel-rest-client/iconUrl" : "https://cdn.rawgit.com/fabric8io/fabric8/master/fabric8-maven-plugin/src/main/resources/icons/camel.svg",
+      "fabric8.camel-rest-service/iconUrl" : "https://cdn.rawgit.com/fabric8io/fabric8/master/fabric8-maven-plugin/src/main/resources/icons/camel.svg"
+    },
+    "labels" : { },
+    "name" : "camel-microservices"
+  },
+  "objects" : [ {
+    "apiVersion" : "v1",
+    "kind" : "Service",
+    "metadata" : {
+      "annotations" : {
+        "prometheus.io/port" : "9779",
+        "prometheus.io/scrape" : "true"
+      },
+      "labels" : {
+        "container" : "java",
+        "component" : "camel-rest-client",
+        "provider" : "fabric8",
+        "project" : "camel-rest-client",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "demo",
+        "package" : "camel-microservices"
+      },
+      "name" : "camel-rest-client"
+    },
+
+    ...
+    
+```
+
+To deploy our application on OpenShift, we will use the OpenShift `oc` client and with the command `process` and pass as parameter the definition of the file `oc process -f target/classes/kubernetes.json | oc create -f -`
+
+The different commands to be used are summarized here after
+
+```
+cd packages
+
+export KUBERNETES_DOMAIN=vagrant.f8
+export DOCKER_HOST="tcp://172.28.128.4:2375"
+export DOCKER_REGISTRY="172.28.128.4:5000"
+
+oc login -u admin -p admin https://172.28.128.4:8443
+oc delete project demo
+oc new-project demo
+oc delete pods -l group=demo
+oc delete services -l group=demo
+oc delete route -l group=demo
+oc delete rc -l group=demo
+
+mvn clean install
+
+oc process -f target/classes/kubernetes.json | oc create -f -
+```
+
+You can now verify that the two pods are up and running
+
+```
+oc get pods
+NAME                       READY     STATUS    RESTARTS   AGE
+camel-rest-client-elxt1    1/1       Running   0          34m
+camel-rest-service-4h2j4   1/1       Running   0          30m
+camel-rest-service-61gq4   1/1       Running   0          34m
+camel-rest-service-t33ws   1/1       Running   0          30m
+
+```
+
 # Continuous Development
 
 In order to automate the build, deployment process and the creation of the Microservices as pods on the OpenShift platform, we will create a Jenkins Groovy DSL file that 
@@ -569,8 +679,19 @@ Here is the definition the Groovy DSL file that we will use.
 
 ```
 def GIT_URL = "http://gogs.vagrant.f8/gogsadmin/microservice.git"
-def BRANCH = "master"
+def BRANCH = "kubernetes"
 def CREDENTIALS = ""
+
+#stage('prepare')
+#node {
+#    sh 'wget https://github.com/openshift/origin/releases/download/v1.1.3/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
+#    sh 'tar -vxf openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
+#    sh 'export OC_PATH=`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit'
+#    sh 'export PATH=$PATH:$OC_PATH'
+#    
+#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc login -u admin -p admin --insecure-skip-tls-verify=false https://172.17.0.1:8443'
+#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc new-project demo'
+#}
 
 stage('clone')
 node {
@@ -629,21 +750,12 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * You will be redirect to the previous screen and after a few moments, you will see new pods within your list (jenkins, gogs, nexus)
 * Click on the `gogs` [link](http://gogs.vagrant.f8/) to access to the Gogs Server 
 * Create a new repository with the name `microservice`. The username and password to be used are `gogsadmin` and `RedHat$1`
-
-![Gogs Microservice repo](/image/gogs-repo.png)
-
 * Use the `http://gogs.vagrant.f8/gogsadmin/microservice.git` uri to create a new project on your machine and copy/paste within this project this microservice project (without the .git folder)
 * Commit the project to gogs
 * From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
 * Increase the number of executors by editing the jenkins system configuration at this address `http://jenkins.vagrant.f8/manage` and change the value from 0 to 1 for the field ``
 * Create a new job with the name `microservice`, select the `pipeline` option and clock o nthe button `ok`
-
-![Jenkins pipeline](/image/jenkins-pipeline1.png)
-
 * Within the pipeline screen, move to the section `Piepleine script` and add the content of the jenkinsfile within the field. Click on the `save` button
-
-![Jenkins pipeline](/image/jenkins-pipeline2.png)
-
 * Launch the job and check the content of console to verify that the project is well compiled, ...
 
 ```
@@ -670,17 +782,6 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 [INFO] ------------------------------------------------------------------------
 ```
 
-* Return to the Fabric8 console, select the demo namespace and access to your client and service pods
-
-![Microservice pods](/image/pods.png)
-
-And Camel Route
-
-![Camel Route](/image/camel-route.png)
-
+* Return to the Fabric8 console, select the demo namespace and access to your different pods
 
 Enjoy the Camel MicroService & MicroContainer !
-
-
-
-
