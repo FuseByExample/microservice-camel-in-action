@@ -551,7 +551,7 @@ cd packages
 mvn clean install
 oc delete all -l provider=fabric8
 oc process -f target/classes/kubernetes.json | oc create -f -
-``
+```
 
 
 # Continuous Development
