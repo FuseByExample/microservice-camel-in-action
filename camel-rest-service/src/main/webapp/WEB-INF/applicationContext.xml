@@ -5,8 +5,20 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
+  <bean id="camelRestRoute" class="org.jboss.fuse.microservice.CamelRestRoute"/>
+
   <camelContext xmlns="http://camel.apache.org/schema/spring">
-    <package>org.jboss.fuse.microservice</package>
+    <!-- Wildfly & Spring can't find the classes
+         java.io.FileNotFoundException: /content/camel-rest-service.war/WEB-INF/classes/org/jboss/fuse/microservice (No such file or directory)
+         at java.io.FileInputStream.open0(Native Method)
+         at java.io.FileInputStream.open(FileInputStream.java:195)
+         at java.io.FileInputStream.<init>(FileInputStream.java:138)
+         at org.apache.camel.impl.DefaultPackageScanClassResolver.find(DefaultPackageScanClassResolver.java:296)
+        <packageScan>
+      <package>org.jboss.fuse.microservice</package>
+    </packageScan>
+    -->
+    <routeBuilder ref="camelRestRoute"/>
   </camelContext>
 
 </beans>
