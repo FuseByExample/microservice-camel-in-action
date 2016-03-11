@@ -453,6 +453,7 @@ Hello charles! Welcome from pod : 6da09e192031
     export KUBERNETES_DOMAIN=vagrant.f8
     export DOCKER_HOST=tcp://172.28.128.4:2375
     export DOCKER_IP=172.28.128.4
+    export DOCKER_REGISTRY="172.28.128.4:5000"
 ```
 
 * We will build the project using the following profile
@@ -462,7 +463,7 @@ Hello charles! Welcome from pod : 6da09e192031
     mvn -Pf8-build
 ```
 
-* To deploy the project, then use this command
+* To deploy the project on OpenShift and to create the pods, then use this command
 
 ```
     mvn -Pf8-local-deploy
@@ -484,15 +485,13 @@ Hello charles! Welcome from pod : 6da09e192031
     private Endpoint httpEndpoint;
 ```
 
-* Build and deploy the pod of Camel REST Client
+* Build and deploy the pod of the Camel REST Client
 
 ```
-    export KUBERNETES_DOMAIN=vagrant.f8
-    export DOCKER_HOST=tcp://172.28.128.4:2375
     mvn -Pf8-local-deploy
 ```
 
-* Verify in openshift / Fabric console that the pods, service, controller have been created
+* Verify in OpenShift / Fabric console that the pods, service, controller have been created
 
 ```
 oc get pods
@@ -669,29 +668,18 @@ Remark : For more information about the Groovy DSL syntax, please use the follow
  
 The scenario that we will achieve within the script is defined as such :
  
-* Stage `prepare` : Log to the openshift server using the admin user and create a namespace/project called `demo`
 * Stage `clone` : Git clone the project from the gogs repository
-* Stage `deploy` : Compile the project
-* Build the docker images for the microservices client & service
-* Create the Kubernetes Service, replication controller and pods 
+* Stage `compile`: Compile the project using maven
+* Stage `deploy` : Deploy the project
+** Build the docker images for the microservices client & service
+** Create the Kubernetes Service, replication controller and pods 
 
 Here is the definition the Groovy DSL file that we will use. 
 
 ```
 def GIT_URL = "http://gogs.vagrant.f8/gogsadmin/microservice.git"
-def BRANCH = "kubernetes"
+def BRANCH = "master"
 def CREDENTIALS = ""
-
-#stage('prepare')
-#node {
-#    sh 'wget https://github.com/openshift/origin/releases/download/v1.1.3/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
-#    sh 'tar -vxf openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit.tar.gz'
-#    sh 'export OC_PATH=`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit'
-#    sh 'export PATH=$PATH:$OC_PATH'
-#    
-#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc login -u admin -p admin --insecure-skip-tls-verify=false https://172.17.0.1:8443'
-#    sh '`pwd`/openshift-origin-client-tools-v1.1.3-cffae05-linux-64bit/oc new-project demo'
-#}
 
 stage('clone')
 node {
@@ -755,7 +743,7 @@ within this [screen](http://fabric8.vagrant.f8/kubernetes/namespace/default/apps
 * From the Fabric8 list of pods screen, click on the link to open the `jenkins` server (http://jenkins.vagrant.f8/)
 * Increase the number of executors by editing the jenkins system configuration at this address `http://jenkins.vagrant.f8/manage` and change the value from 0 to 1 for the field ``
 * Create a new job with the name `microservice`, select the `pipeline` option and clock o nthe button `ok`
-* Within the pipeline screen, move to the section `Piepleine script` and add the content of the jenkinsfile within the field. Click on the `save` button
+* Within the pipeline screen, move to the section `Pipeline script` and add the content of the `jenkinsfile` within the field. Click on the `save` button
 * Launch the job and check the content of console to verify that the project is well compiled, ...
 
 ```
