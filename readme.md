@@ -542,8 +542,8 @@ During the previous section we have used the maven goal :
 - the `fabric8:apply` goal has been executed to deploy the project on Openshift for each microservice.
 
 While this approach is relevant when we develop and test microservice individually, this is not longer the case
-when the project will be delivered for the different environments where it will run for `testing` and `production` purposes. It will be required to assemble  
-the microservices together.
+when the project will be delivered for the different environments where it will run for `testing` and `production` purposes.
+It will be required to assemble the microservices together.
 
 To achieve this goal, we will package our `microservices` using an OpenShift Template which is a json file extending the definition of a Kubernetes json file. This file will be created by concatenating
 the json files created for the camel REST client and camel REST service. 
