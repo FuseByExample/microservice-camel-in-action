@@ -22,10 +22,8 @@
 
         <docker.from>jboss/wildfly:10.0.0.Final</docker.from>
         <fabric8.dockerUser>fabric8/</fabric8.dockerUser>
-        <docker.image>${docker.registryPrefix}${fabric8.dockerUser}${project.artifactId}:${project.version}
-        </docker.image>
+        <docker.image>${docker.registryPrefix}${fabric8.dockerUser}${project.artifactId}:${project.version}</docker.image>
         <docker.registryPrefix>${env.DOCKER_REGISTRY}/</docker.registryPrefix>
-        <docker.assemblyDescriptorRef>rootWar</docker.assemblyDescriptorRef>
         <docker.port.container.jolokia>8778</docker.port.container.jolokia>
         <docker.port.container.http>8080</docker.port.container.http>
 
@@ -42,7 +40,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- import fabric8 platfrom bom first -->
+            <!-- import fabric8 platform bom first -->
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
@@ -61,7 +59,6 @@
     </dependencyManagement>
 
     <dependencies>
-
         <!-- camel -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -87,12 +84,10 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>
-
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -116,8 +111,7 @@
                                         <dependencySets>
                                             <dependencySet>
                                                 <includes>
-                                                    <include>${project.groupId}:${project.artifactId}
-                                                    </include>
+                                                    <include>${project.groupId}:${project.artifactId}</include>
                                                 </includes>
                                                 <outputFileNameMapping>test.war</outputFileNameMapping>
                                             </dependencySet>
@@ -151,7 +145,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <!-- WildFly -->
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
