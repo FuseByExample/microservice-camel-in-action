@@ -535,9 +535,13 @@ oc delete rc -l group=demo
 
 # Package the microservices
 
-During the previous section we have used the maven goal `docker:build` to create the docker image, `fabric8:json` goal to create the kubernetes
-json file containing the information about the replication controller, service and pods to be created and the `fabric8:apply` goal has been executed to
-to deploy the project on Openshift for each microservice. While this approach is relevant when we develop and test microservice individually, this is not longer the case
+During the previous section we have used the maven goal :
+
+- `docker:build` to create the docker image, 
+- `fabric8:json` goal to create the kubernetes json file containing the information about the replication controller, service and pods to be created and
+- the `fabric8:apply` goal has been executed to deploy the project on Openshift for each microservice.
+
+While this approach is relevant when we develop and test microservice individually, this is not longer the case
 when the project will be delivered for the different environments where it will run for `testing` and `production` purposes. It will be required to assemble  
 the microservices together.
 
