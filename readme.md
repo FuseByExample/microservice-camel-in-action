@@ -15,6 +15,7 @@ project. They both will be created as Microservice as they will be able to run i
 * [Use a Docker daemon](#use-a-docker-daemon)
 * [Use OpenShift &amp; Kubernetes Service](#use-openshift--kubernetes-service)
 * [Clean project](#clean-project)
+* [Package the microservices](#package-the-microservices)
 * [Continuous Development](#continuous-development)
 
 # Prerequisites
@@ -532,6 +533,26 @@ oc delete services -l group=demo
 oc delete route -l group=demo
 oc delete rc -l group=demo
 ```
+
+# Package the microservices
+
+```
+export KUBERNETES_DOMAIN=vagrant.f8
+export DOCKER_HOST="tcp://172.28.128.4:2375"
+export DOCKER_REGISTRY="172.28.128.4:5000"
+
+mvn clean -Pf8-build
+
+oc login -u admin -p admin https://172.28.128.4:8443
+oc delete project demo
+oc new-project demo
+
+cd packages
+mvn clean install
+oc delete all -l provider=fabric8
+oc process -f target/classes/kubernetes.json | oc create -f -
+``
+
 
 # Continuous Development
 
