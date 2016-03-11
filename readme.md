@@ -566,8 +566,7 @@ For that purpose, we have created a maven `packages` module where the `<packagin
 
 By running this maven command `mvn clean install`, we will generate the following OSE Template under the directory target/classes/kubernetes.json
 
-[source,json]
-----
+```
 {
   "apiVersion" : "v1",
   "kind" : "Template",
@@ -792,7 +791,7 @@ By running this maven command `mvn clean install`, we will generate the followin
   } ],
   "parameters" : [ ]
 }
-----
+```
 
 To deploy our application on OpenShift, we will use the `oc` client and with the command `process` and pass as paremter the definition of the file `oc process -f target/classes/kubernetes.json | oc create -f -`
 
