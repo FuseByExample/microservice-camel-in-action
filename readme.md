@@ -546,8 +546,7 @@ the json files created for the camel REST client and camel REST service.
 
 For that purpose, we have created a maven `packages` module where the `<packaging>` has been define to `pom` and where we have declared the dependencies of our microservices to be packaged together as such
 
-[source,xml]
-----
+```
 <dependency>
     <groupId>org.jboss.fuse</groupId>
     <artifactId>camel-rest-service</artifactId>
@@ -562,7 +561,7 @@ For that purpose, we have created a maven `packages` module where the `<packagin
     <classifier>kubernetes</classifier>
     <type>json</type>
 </dependency>
-----
+```
 
 By running this maven command `mvn clean install`, we will generate the following OSE Template under the directory target/classes/kubernetes.json
 
