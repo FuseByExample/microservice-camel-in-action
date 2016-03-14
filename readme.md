@@ -537,11 +537,19 @@ camel-rest-service   camel-rest-service-demo.vagrant.f8             camel-rest-s
 
 # Clean project
 
+To clean the `demo` namespace/project, please use the following OpenShift `oc` client commands responsible to remove the pods, services, replication controller & routes
+
 ```
 oc delete pods -l group=demo
 oc delete services -l group=demo
 oc delete route -l group=demo
 oc delete rc -l group=demo
+```
+
+If, for any reasons you would like to delete the `Fabric8` kubernetes applications (Console, Cd Pipeline, ...), you can achieve this goal using these commands :
+
+```
+oc delete all -l provider=fabric8
 ```
 
 # Package the microservices
