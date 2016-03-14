@@ -115,7 +115,7 @@
                                                 <includes>
                                                     <include>${project.groupId}:${project.artifactId}</include>
                                                 </includes>
-                                                <outputFileNameMapping>test.war</outputFileNameMapping>
+                                                <outputFileNameMapping>rest-service.war</outputFileNameMapping>
                                             </dependencySet>
                                         </dependencySets>
                                     </inline>
