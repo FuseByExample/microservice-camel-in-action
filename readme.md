@@ -278,7 +278,7 @@ Hello charles! Welcome from pod : null
 
 * Launch the docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
 
-* Alternatively, you can use the Vagrant Fabric8 virtual Machine created in VietualBox to access Docker daemon
+* Alternatively, you can use the Vagrant Fabric8 virtual Machine created in VirtualBox to access Docker daemon
 
 ```
 cd /path/to/fabric8-installer/tree/master/vagrant/openshift
