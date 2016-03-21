@@ -705,15 +705,7 @@ node {
 stage('deploy')
 node {
     withEnv(["PATH+MAVEN=${tool 'maven-3.3.1'}/bin"]) {
-
-        dir('camel-rest-service') {
-         sh 'mvn -Dfabric8.namespace=demo -Pf8-local-deploy'
-        }
-        
-        dir('camel-rest-client') {
-         sh 'mvn -Dfabric8.namespace=demo -Pf8-local-deploy'
-        }
-        
+        sh 'mvn -Dfabric8.namespace=demo -Pf8-local-deploy'
     }
 }
 ```
