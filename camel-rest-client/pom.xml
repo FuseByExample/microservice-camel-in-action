@@ -186,7 +186,7 @@
     <profile>
       <id>docker-build</id>
       <build>
-        <defaultGoal>mvn clean install docker:build</defaultGoal>
+        <defaultGoal>clean install docker:build</defaultGoal>
       </build>
     </profile>
     <profile>
