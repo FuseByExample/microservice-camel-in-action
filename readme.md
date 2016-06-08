@@ -525,7 +525,11 @@ camel-rest-service   camel-rest-service-demo.vagrant.f8             camel-rest-s
 2016-01-18 19:37:36,490 [ClientTCPWorker] INFO  route1                         - Response : Hello Nandan Joshi! Welcome from pod : camel-rest-service-8pbq9
 ```
 
-* Increase the controller of the REST service to create 3 pods
+* Scale the controller of the REST service to create 3 pods
+
+```
+oc scale rc camel-rest-service --replicas=3
+```
 
 * Check that the client gets a request from one of the Service running into a different pod
 
