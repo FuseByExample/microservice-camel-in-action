@@ -18,7 +18,7 @@ public class MyRoutes extends RouteBuilder {
     private Endpoint inputEndpoint;
 
     @Inject
-    @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
+    @Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
     private Endpoint httpEndpoint;
 
     @Inject

@@ -250,10 +250,10 @@ Version: 1.0-SNAPSHOT
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-rest.png)
 
 * Open 2 terminal and move to the projects; `camel-rest-client` and `camel-rest-service`
-* Launch the REST Service
+* Launch the REST Service using WildFly Web Container
 
 ```
-mvn jetty:run
+mvn wildfly:run
 ```
 * And the client
 
@@ -263,7 +263,7 @@ mvn camel:run
 * Test it using curl or HTTPie tool
 
 ```
-http GET http://localhost:8080/camel/users/charles/hello
+http GET http://localhost:8080/camel-rest-service/camel/users/charles/hello
 HTTP/1.1 200 OK
 Date: Mon, 18 Jan 2016 17:39:24 GMT
 Server: Jetty(9.2.11.v20150529)
