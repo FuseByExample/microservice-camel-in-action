@@ -249,7 +249,8 @@ Version: 1.0-SNAPSHOT
 
 ![Openshift Microservice](https://raw.githubusercontent.com/FuseByExample/microservice-camel-in-action/master/image/microservice-rest.png)
 
-* Open 2 terminal and move to the projects; `camel-rest-client` and `camel-rest-service`
+* Checkout the project to use the branch containing the project WildFly `git checkout -b wildfly`
+* Open 2 terminal and move to the projects; `camel-rest-client` and `camel-rest-service` respectively
 * Launch the REST Service using WildFly Web Container
 
 ```
@@ -340,7 +341,7 @@ fabric8-vagrant
 
 ```
     git checkout -b docker
-    mvn clean install docker:build
+    mvn -Pdocker-build
     docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service $DOCKER_IP:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
 ```
 
@@ -381,7 +382,7 @@ Hello charles! Welcome from pod : 6da09e192031
 
 ```
     cd camel-rest-client
-    mvn clean install docker:build
+    mvn -Pdocker-build
     docker run -it --name camel-rest-client -e DOCKER_CONTAINER_IP=172.17.0.13 $DOCKER_IP:5000/fabric8/camel-rest-client:1.0-SNAPSHOT
 ```
 
