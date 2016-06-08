@@ -2,14 +2,16 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jboss.fuse</groupId>
+  <parent>
+    <artifactId>microservice</artifactId>
+    <groupId>org.jboss.fuse</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
   <artifactId>camel-rest-client</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>JBoss Fuse :: Microservice :: Camel Rest Client - CDI</name>
 
   <properties>
-    <camel.version>2.16.1</camel.version>
-
     <docker.assemblyDescriptorRef>artifact-with-dependencies</docker.assemblyDescriptorRef>
     <docker.from>fabric8/s2i-java:1.2</docker.from>
     <docker.image>${docker.registryPrefix}fabric8/${project.artifactId}:${project.version}</docker.image>
@@ -41,7 +43,7 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-cdi</artifactId>
-      <version>2.16.1</version>
+      <version>${camel.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
@@ -82,7 +84,6 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-test</artifactId>
-      <version>2.16.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -109,7 +110,7 @@
       <plugin>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-maven-plugin</artifactId>
-        <version>2.16.1</version>
+        <version>${camel.version}</version>
         <configuration>
           <useCDI>true</useCDI>
         </configuration>

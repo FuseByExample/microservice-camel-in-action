@@ -11,7 +11,8 @@
 
     <properties>
         <docker.maven.plugin.version>0.13.6</docker.maven.plugin.version>
-        <fabric8.version>2.2.88</fabric8.version>
+        <fabric8.version>2.2.125</fabric8.version>
+        <camel.version>2.16.1</camel.version>
     </properties>
 
     <modules>
@@ -23,15 +24,17 @@
         <dependencies>
             <dependency>
                 <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-arquillian</artifactId>
+                <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
                 <version>${fabric8.version}</version>
-                <scope>test</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-arquillian</artifactId>
-                <version>${fabric8.version}</version>
-                <scope>test</scope>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-parent</artifactId>
+                <version>${camel.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

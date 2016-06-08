@@ -15,9 +15,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- configure the versions you want to use here -->
-        <camel.version>2.16.1</camel.version>
-
         <docker.from>fabric8/tomcat-8.0</docker.from>
         <fabric8.dockerUser>fabric8/</fabric8.dockerUser>
         <docker.image>${docker.registryPrefix}fabric8/${project.artifactId}:${project.version}</docker.image>
@@ -36,26 +33,6 @@
         <fabric8.service.type>LoadBalancer</fabric8.service.type>
         <fabric8.iconRef>camel</fabric8.iconRef>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- import fabric8 platfrom bom first -->
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
-                <version>${fabric8.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-parent</artifactId>
-                <version>${camel.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
 
@@ -150,19 +127,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- so we can run mvn jetty:run -->
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.11.v20150529</version>
-                <configuration>
-                    <httpConnector>
-                        <port>8080</port>
-                    </httpConnector>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 
