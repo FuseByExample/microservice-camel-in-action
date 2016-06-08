@@ -295,11 +295,11 @@ Hello charles! Welcome from pod : null
 * Now, you can build the docker image of the Camel Rest Service and push it to the registry by executing these commands within the terminal of the `camel-rest-service` project
 
 ```
-    mvn clean install docker:build
+    mvn -Pdocker-build
     docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service 192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
 ```
 
-* Find the IP address of the docker container created as we whave to change this address for the URL of the client
+* Find the IP address of the docker container created as we must change this address for the URL of the client
 
 ```
     docker ps --filter="name=rest" | awk '{print $1}' | xargs docker inspect | grep "IPAddress"
@@ -311,12 +311,6 @@ Hello charles! Welcome from pod : null
 docker ps --filter="name=rest"
 CONTAINER ID        IMAGE                                                         COMMAND                  CREATED             STATUS              PORTS                                            NAMES
 6da09e192031        192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT   "/bin/sh -c /opt/tomc"   8 minutes ago       Up 8 minutes        0.0.0.0:8080->8080/tcp, 0.0.0.0:8778->8778/tcp   camel-rest-service
-```
-
-*  Change the url of the netty4-http endpoint of the camel REST Client to point to this Hostname
-
-```
-    @Uri("netty4-http:http://DOCKER_CONTAINER_IPADDRESS:8080?keepalive=false&disconnect=true")
 ```
 
 * Test it using HTTPie or curl. The return message mentions the POD name but the id corresponds to the docker container created
@@ -335,7 +329,7 @@ Hello charles! Welcome from pod : 6da09e192031
 * So, build the Image and create the container as such
 
 ```
-    mvn clean install docker:build
+    mvn -Pdocker-build
     docker run -it --name camel-rest-client 192.168.99.100:5000/fabric8/camel-rest-client:1.0-SNAPSHOT
 ```
 

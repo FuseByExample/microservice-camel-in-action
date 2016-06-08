@@ -184,6 +184,12 @@
 
   <profiles>
     <profile>
+      <id>docker-build</id>
+      <build>
+        <defaultGoal>mvn clean install docker:build</defaultGoal>
+      </build>
+    </profile>
+    <profile>
       <id>f8-build</id>
       <build>
         <defaultGoal>clean install docker:build fabric8:json</defaultGoal>
